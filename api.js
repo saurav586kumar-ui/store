@@ -1,148 +1,170 @@
-/* =========================================================
-   LUXE STORE - API & DATABASE HANDLER (api.js)
-   Connects HTML Frontend to MongoDB Atlas / Backend APIs
-   ========================================================= */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+import { 
+  getFirestore, 
+  collection, 
+  addDoc, 
+  updateDoc, 
+  doc, 
+  deleteDoc, 
+  onSnapshot 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { 
+  getAuth, 
+  signInWithEmailAndPassword, 
+  signOut, 
+  onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-// Configuration: Apni Google Cloud / MongoDB Atlas API Base URL yahan dalein
-const API_CONFIG = {
-  BASE_URL: "https://your-backend-api-domain.com/api", // Apne API server ya Atlas Data API ka URL dalein
-  API_KEY: "YOUR_MONGODB_ATLAS_API_KEY" // Agar direct Data API use kar rahe hain
+// ==========================================
+// 1. FIREBASE CONFIGURATION & INITIALIZATION
+// ==========================================
+const firebaseConfig = {
+  apiKey: "AIzaSyCjr6addRfZbk7Ce4Lzku9HnBqzqHN5LtY",
+  authDomain: "store-1a8c3.firebaseapp.com",
+  projectId: "store-1a8c3",
+  storageBucket: "store-1a8c3.firebasestorage.app",
+  messagingSenderId: "1046602403433",
+  appId: "1:1046602403433:web:ad52f96538bec45b5d1cf8",
+  measurementId: "G-0Z9QMGFL4W"
 };
 
+// App aur Core Services Initialize karein
+const app = initializeApp(firebaseConfig);
+export const analytics = typeof window !== "undefined" ? getAnalytics(app) : null;
+export const db = getFirestore(app);
+export const auth = getAuth(app);
+
+// ==========================================
+// 2. PRODUCTS & INVENTORY MANAGEMENT
+// ==========================================
+
 /**
- * 1. GET ALL PRODUCTS
- * Database se sare products fetch karta hai (In Stock & Out of Stock)
+ * Real-time products listener (Store Page & Inventory Control ke liye)
  */
-async function fetchProductsFromDB() {
+export function subscribeProducts(callback) {
   try {
-    const response = await fetch(`${API_CONFIG.BASE_URL}/products`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "api-key": API_CONFIG.API_KEY
-      }
+    const productsRef = collection(db, "products");
+    return onSnapshot(productsRef, (snapshot) => {
+      const products = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      callback(products);
+    }, (error) => {
+      console.error("Error fetching products:", error);
     });
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch products from database");
-    }
-
-    const products = await response.json();
-    return products;
   } catch (error) {
-    console.error("Error fetching products:", error);
-    // Fallback: Agar API fail hoti hai toh localStorage se data read karega
-    return JSON.parse(localStorage.getItem("products_db")) || [];
+    console.error("Subscription failed:", error);
   }
 }
 
 /**
- * 2. ADD NEW PRODUCT (ADMIN)
- * Database me naya product insert karta hai
+ * Naya product upload karne ke liye (Admin Only)
  */
-async function addProductToDB(productData) {
+export async function addProductToFirebase(product) {
   try {
-    const response = await fetch(`${API_CONFIG.BASE_URL}/products/add`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "api-key": API_CONFIG.API_KEY
-      },
-      body: JSON.stringify(productData)
-    });
-
-    const result = await response.json();
-    return result;
+    const docRef = await addDoc(collection(db, "products"), product);
+    return docRef.id;
   } catch (error) {
-    console.error("Error adding product to DB:", error);
-    // Local fallback for offline testing
-    let localDB = JSON.parse(localStorage.getItem("products_db")) || [];
-    localDB.push(productData);
-    localStorage.setItem("products_db", JSON.stringify(localDB));
-    return { success: true, message: "Saved to local storage (Offline Mode)" };
+    console.error("Error adding product:", error);
+    throw error;
   }
 }
 
 /**
- * 3. TOGGLE STOCK STATUS (IN STOCK / OUT OF STOCK)
- * Specific product ka stock status (isStock: true/false) update karta hai
+ * Product stock status badalne ke liye (In Stock / Out of Stock)
  */
-async function updateStockInDB(productId, isStockStatus) {
+export async function toggleStockStatus(productId, currentStatus) {
   try {
-    const response = await fetch(`${API_CONFIG.BASE_URL}/products/update-stock`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        "api-key": API_CONFIG.API_KEY
-      },
-      body: JSON.stringify({
-        id: productId,
-        isStock: isStockStatus
-      })
-    });
-
-    const result = await response.json();
-    return result;
+    const productRef = doc(db, "products", productId);
+    await updateDoc(productRef, { isStock: !currentStatus });
   } catch (error) {
     console.error("Error updating stock status:", error);
-    // Local fallback for offline testing
-    let localDB = JSON.parse(localStorage.getItem("products_db")) || [];
-    localDB = localDB.map(prod => {
-      if (prod.id === productId) {
-        return { ...prod, isStock: isStockStatus };
-      }
-      return prod;
-    });
-    localStorage.setItem("products_db", JSON.stringify(localDB));
-    return { success: true, message: "Stock updated locally" };
+    throw error;
   }
 }
 
 /**
- * 4. CREATE NEW ORDER (CHECKOUT)
- * Customer ka final order database me place karta hai
+ * Product delete karne ke liye
  */
-async function createOrderInDB(orderData) {
+export async function deleteProductFromFirebase(productId) {
   try {
-    const response = await fetch(`${API_CONFIG.BASE_URL}/orders/create`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "api-key": API_CONFIG.API_KEY
-      },
-      body: JSON.stringify(orderData)
-    });
+    const productRef = doc(db, "products", productId);
+    await deleteDoc(productRef);
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    throw error;
+  }
+}
 
-    const result = await response.json();
-    return result;
+// ==========================================
+// 3. ORDERS & CHECKOUT MANAGEMENT
+// ==========================================
+
+/**
+ * Customer order save karne ke liye (Cart Checkout)
+ */
+export async function placeOrderInFirebase(orderData) {
+  try {
+    const orderPayload = {
+      ...orderData,
+      createdAt: new Date().toISOString(),
+      status: "Processing"
+    };
+    const docRef = await addDoc(collection(db, "orders"), orderPayload);
+    return docRef.id;
   } catch (error) {
     console.error("Error placing order:", error);
-    // Local fallback
-    let orders = JSON.parse(localStorage.getItem("orders_db")) || [];
-    orders.push(orderData);
-    localStorage.setItem("orders_db", JSON.stringify(orders));
-    return { success: true, orderId: orderData.orderId || Date.now() };
+    throw error;
   }
 }
 
 /**
- * 5. FETCH USER ORDER HISTORY
- * Customer ke pichle saare orders fetch karta hai
+ * Real-time orders stream (Admin Dashboard par naye orders dekhne ke liye)
  */
-async function fetchOrderHistoryFromDB(userEmail) {
+export function subscribeOrders(callback) {
   try {
-    const response = await fetch(`${API_CONFIG.BASE_URL}/orders?email=${userEmail}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "api-key": API_CONFIG.API_KEY
-      }
+    const ordersRef = collection(db, "orders");
+    return onSnapshot(ordersRef, (snapshot) => {
+      const orders = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      callback(orders);
+    }, (error) => {
+      console.error("Error fetching orders:", error);
     });
-
-    const orders = await response.json();
-    return orders;
   } catch (error) {
-    console.error("Error fetching order history:", error);
-    return JSON.parse(localStorage.getItem("orders_db")) || [];
+    console.error("Order subscription failed:", error);
   }
+}
+
+// ==========================================
+// 4. ADMIN AUTHENTICATION
+// ==========================================
+
+/**
+ * Admin Panel me login karne ke liye
+ */
+export async function adminLogin(email, password) {
+  try {
+    return await signInWithEmailAndPassword(auth, email, password);
+  } catch (error) {
+    console.error("Login failed:", error);
+    throw error;
+  }
+}
+
+/**
+ * Admin Session logout karne ke liye
+ */
+export async function adminLogout() {
+  try {
+    await signOut(auth);
+  } catch (error) {
+    console.error("Logout failed:", error);
+    throw error;
+  }
+}
+
+/**
+ * Auth state check karne ke liye (Unauthorized users ko rokna)
+ */
+export function listenAuthState(callback) {
+  return onAuthStateChanged(auth, callback);
 }
