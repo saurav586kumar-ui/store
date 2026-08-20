@@ -3,250 +3,261 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard - Luxe Store</title>
+  <title>Admin Dashboard - JUSTKHARIDO</title>
   <style>
     :root {
       --primary: #ff3e6c;
-      --secondary: #0d1117;
-      --accent: #2ea44f;
-      --bg-light: #f4f6f9;
-      --card-bg: #ffffff;
-      --text-main: #1f2937;
-      --out-stock: #ef4444;
+      --accent: #00f2fe;
+      --bg-dark: #090d16;
+      --card-bg: rgba(22, 27, 34, 0.85);
+      --text: #f0f6fc;
+      --text-muted: #8b949e;
+      --border: rgba(255, 255, 255, 0.08);
+      --danger: #da3633;
+      --success: #238636;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: var(--bg-light); color: var(--text-main); }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; }
+    body { background: var(--bg-dark); color: var(--text); padding-bottom: 60px; }
 
     /* Header */
     header {
-      background-color: var(--secondary);
-      color: white;
-      padding: 15px 5%;
+      background: rgba(9, 13, 22, 0.85);
+      backdrop-filter: blur(12px);
+      padding: 18px 8%;
       display: flex;
       justify-content: space-between;
       align-items: center;
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 1000;
+      border-bottom: 1px solid var(--border);
     }
-    .logo { font-size: 22px; font-weight: 800; color: var(--primary); }
-    .nav-links a { color: white; text-decoration: none; margin-left: 20px; font-weight: 600; }
 
-    /* Main Container */
-    .admin-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+    .logo {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+    .card { background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border); padding: 24px; margin-bottom: 30px; }
     
-    .section-title { font-size: 24px; font-weight: 700; margin-bottom: 20px; border-left: 5px solid var(--primary); padding-left: 10px; }
+    .input-field {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 14px;
+      background: #161b22;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      outline: none;
+    }
 
-    /* Grid Layout */
-    .dashboard-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
-
-    /* Card Box */
-    .panel-card { background: var(--card-bg); padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-
-    /* Form Styles */
-    .form-group { margin-bottom: 15px; }
-    .form-group label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 14px; }
-    .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
-
-    .checkbox-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 5px; }
-    .checkbox-group label { font-weight: normal; font-size: 13px; }
-
-    .submit-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; font-weight: bold; border-radius: 6px; cursor: pointer; }
-    .submit-btn:hover { background: #e0325c; }
-
-    /* Table Styles */
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; font-size: 14px; }
-    th { background-color: #f8fafc; font-weight: 700; }
-
-    /* Stock Toggle Switch */
-    .toggle-btn {
-      padding: 6px 12px;
+    .btn {
+      padding: 10px 20px;
       border: none;
-      border-radius: 20px;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 12px;
+      border-radius: 8px;
+      background: var(--primary);
       color: white;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.3s;
     }
-    .toggle-in { background-color: var(--accent); }
-    .toggle-out { background-color: var(--out-stock); }
 
-    @media (max-width: 900px) {
-      .dashboard-grid { grid-template-columns: 1fr; }
-    }
+    .btn:hover { opacity: 0.9; }
+    .btn-danger { background: var(--danger); }
+    .btn-secondary { background: #30363d; }
+
+    /* Auth Overlay */
+    #login-box { max-width: 400px; margin: 100px auto; }
+    #admin-dashboard { display: none; }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
+    th { color: var(--text-muted); font-size: 14px; }
+    .product-thumb { width: 45px; height: 45px; border-radius: 6px; object-fit: cover; }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="logo">LUXE ADMIN PANEL</div>
-    <div class="nav-links">
-      <a href="products.html">View Store</a>
-      <a href="admin.html">Dashboard</a>
-    </div>
+    <div class="logo">JUSTKHARIDO ADMIN</div>
+    <div id="auth-nav"></div>
   </header>
 
-  <div class="admin-container">
-    <div class="dashboard-grid">
-
-      <!-- Add Product Form -->
-      <div class="panel-card">
-        <h2 class="section-title">Add New Product</h2>
-        <form id="add-product-form" onsubmit="handleProductAdd(event)">
-          <div class="form-group">
-            <label>Product Title</label>
-            <input type="text" id="prod-title" required placeholder="e.g. Classic Black T-Shirt">
-          </div>
-
-          <div class="form-group">
-            <label>Category</label>
-            <select id="prod-category">
-              <option value="clothing">Clothing</option>
-              <option value="footwear">Footwear</option>
-              <option value="accessories">Accessories</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Price (₹)</label>
-            <input type="number" id="prod-price" required placeholder="999">
-          </div>
-
-          <div class="form-group">
-            <label>Image URL</label>
-            <input type="url" id="prod-image" required placeholder="https://example.com/photo.jpg">
-          </div>
-
-          <div class="form-group">
-            <label>Available Sizes</label>
-            <div class="checkbox-group">
-              <label><input type="checkbox" name="size" value="S"> S</label>
-              <label><input type="checkbox" name="size" value="M"> M</label>
-              <label><input type="checkbox" name="size" value="L"> L</label>
-              <label><input type="checkbox" name="size" value="XL"> XL</label>
-            </div>
-          </div>
-
-          <button type="submit" class="submit-btn">Publish Product</button>
-        </form>
-      </div>
-
-      <!-- Inventory Management Table -->
-      <div class="panel-card">
-        <h2 class="section-title">Manage Inventory & Stock</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Category</th>
-              <th>Price</th>
-              <th>Stock Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="admin-product-table">
-            <!-- Dynamic rows will be added here -->
-          </tbody>
-        </table>
-      </div>
-
-    </div>
+  <!-- Login Section -->
+  <div id="login-box" class="card">
+    <h2 style="margin-bottom: 20px; text-align: center;">Admin Login</h2>
+    <input type="email" id="login-email" placeholder="Admin Email" class="input-field">
+    <input type="password" id="login-pass" placeholder="Password" class="input-field">
+    <button class="btn" style="width: 100%;" onclick="handleLogin()">LOGIN</button>
   </div>
 
-  <script>
-    // Sample Initial Products State
-    let adminProducts = JSON.parse(localStorage.getItem('products_db')) || [
-      {
-        id: "1",
-        title: "Vintage Denim Jacket",
-        category: "clothing",
-        price: 2499,
-        isStock: true
-      },
-      {
-        id: "2",
-        title: "Urban Streetwear Hoodie",
-        category: "clothing",
-        price: 1899,
-        isStock: false
-      }
-    ];
+  <!-- Dashboard Section -->
+  <div id="admin-dashboard" class="container">
+    
+    <!-- Add Product Form -->
+    <div class="card">
+      <h3 style="margin-bottom: 15px;">Add New Product</h3>
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px;">
+        <input type="text" id="p-title" placeholder="Product Title" class="input-field">
+        <input type="number" id="p-price" placeholder="Price (₹)" class="input-field">
+      </div>
+      <input type="url" id="p-image" placeholder="Image URL (Unsplash or direct link)" class="input-field">
+      <button class="btn" onclick="handleAddProduct()">UPLOAD PRODUCT</button>
+    </div>
 
-    function saveAndRender() {
-      localStorage.setItem('products_db', JSON.stringify(adminProducts));
-      const tbody = document.getElementById('admin-product-table');
-      tbody.innerHTML = '';
-
-      adminProducts.forEach(prod => {
-        const row = `
+    <!-- Inventory List -->
+    <div class="card">
+      <h3>Manage Inventory</h3>
+      <table>
+        <thead>
           <tr>
-            <td><strong>${prod.title}</strong></td>
-            <td>${prod.category}</td>
-            <td>₹${prod.price}</td>
-            <td>
-              <span style="color: ${prod.isStock ? '#2ea44f' : '#ef4444'}; font-weight: bold;">
-                ${prod.isStock ? 'In Stock' : 'Out of Stock'}
-              </span>
-            </td>
-            <td>
-              <button class="toggle-btn ${prod.isStock ? 'toggle-out' : 'toggle-in'}" 
-                      onclick="toggleStock('${prod.id}')">
-                Mark as ${prod.isStock ? 'Out of Stock' : 'In Stock'}
-              </button>
-            </td>
+            <th>Image</th>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Actions</th>
           </tr>
-        `;
-        tbody.innerHTML += row;
-      });
-    }
+        </thead>
+        <tbody id="inventory-list">
+          <tr><td colspan="5" style="color:var(--text-muted);">Loading products...</td></tr>
+        </tbody>
+      </table>
+    </div>
 
-    function toggleStock(id) {
-      adminProducts = adminProducts.map(p => {
-        if (p.id === id) {
-          return { ...p, isStock: !p.isStock };
-        }
-        return p;
-      });
-      saveAndRender();
-    }
+    <!-- Customer Orders -->
+    <div class="card">
+      <h3>Live Customer Orders</h3>
+      <div id="orders-list" style="margin-top: 15px;">
+        <p style="color: var(--text-muted);">Loading orders...</p>
+      </div>
+    </div>
 
-    function handleProductAdd(event) {
-      event.preventDefault();
+  </div>
 
-      const title = document.getElementById('prod-title').value;
-      const category = document.getElementById('prod-category').value;
-      const price = document.getElementById('prod-price').value;
-      const image = document.getElementById('prod-image').value;
-      
-      const sizeNodes = document.querySelectorAll('input[name="size"]:checked');
-      const sizes = Array.from(sizeNodes).map(node => node.value);
+  <script type="module">
+    import { 
+      adminLogin, 
+      adminLogout, 
+      listenAuthState, 
+      subscribeProducts, 
+      addProductToFirebase, 
+      toggleStockStatus, 
+      deleteProductFromFirebase, 
+      subscribeOrders 
+    } from './api.js';
 
-      if (sizes.length === 0) {
-        alert('Please select at least one size!');
-        return;
+    // Authentication Guard
+    listenAuthState((user) => {
+      const loginBox = document.getElementById('login-box');
+      const dashboard = document.getElementById('admin-dashboard');
+      const authNav = document.getElementById('auth-nav');
+
+      if (user) {
+        loginBox.style.display = 'none';
+        dashboard.style.display = 'block';
+        authNav.innerHTML = `<button class="btn btn-secondary" onclick="handleLogout()">LOGOUT</button>`;
+        initAdminData();
+      } else {
+        loginBox.style.display = 'block';
+        dashboard.style.display = 'none';
+        authNav.innerHTML = '';
       }
+    });
 
-      const newProduct = {
-        id: Date.now().toString(),
-        title,
-        category,
-        price: Number(price),
-        image,
-        sizes,
-        isStock: true
-      };
+    window.handleLogin = async () => {
+      const email = document.getElementById('login-email').value;
+      const pass = document.getElementById('login-pass').value;
+      try {
+        await adminLogin(email, pass);
+      } catch (err) {
+        alert('Invalid Admin Credentials!');
+      }
+    };
 
-      adminProducts.push(newProduct);
-      saveAndRender();
+    window.handleLogout = () => adminLogout();
 
-      document.getElementById('add-product-form').reset();
-      alert('New product added successfully!');
+    function initAdminData() {
+      // Stream Products
+      subscribeProducts((products) => {
+        const tbody = document.getElementById('inventory-list');
+        tbody.innerHTML = '';
+        products.forEach(p => {
+          tbody.innerHTML += `
+            <tr>
+              <td><img src="${p.image}" class="product-thumb"></td>
+              <td style="font-weight:700;">${p.title}</td>
+              <td>₹${p.price}</td>
+              <td>
+                <button class="btn ${p.isStock ? 'btn' : 'btn-secondary'}" onclick="toggleStock('${p.id}', ${p.isStock})">
+                  ${p.isStock ? 'IN STOCK' : 'OUT OF STOCK'}
+                </button>
+              </td>
+              <td>
+                <button class="btn btn-danger" onclick="removeProduct('${p.id}')">Delete</button>
+              </td>
+            </tr>
+          `;
+        });
+      });
+
+      // Stream Orders
+      subscribeOrders((orders) => {
+        const container = document.getElementById('orders-list');
+        if(orders.length === 0) {
+          container.innerHTML = '<p style="color:var(--text-muted);">No orders received yet.</p>';
+          return;
+        }
+        container.innerHTML = '';
+        orders.reverse().forEach(o => {
+          container.innerHTML += `
+            <div style="background:#161b22; padding:15px; border-radius:10px; margin-bottom:12px; border:1px solid var(--border);">
+              <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                <strong>Order #${o.id}</strong>
+                <span style="color:var(--primary); font-weight:800;">₹${o.totalAmount}</span>
+              </div>
+              <div style="font-size:14px; color:var(--text-muted); margin-bottom:8px;">
+                <strong>Customer:</strong> ${o.customerName} (${o.phone})<br>
+                <strong>Address:</strong> ${o.address}
+              </div>
+            </div>
+          `;
+        });
+      });
     }
 
-    // Initial load
-    saveAndRender();
+    window.handleAddProduct = async () => {
+      const title = document.getElementById('p-title').value.trim();
+      const price = parseFloat(document.getElementById('p-price').value);
+      const image = document.getElementById('p-image').value.trim();
+
+      if (!title || !price || !image) return alert('Please fill all product fields!');
+
+      await addProductToFirebase({
+        title,
+        price,
+        image,
+        isStock: true
+      });
+
+      document.getElementById('p-title').value = '';
+      document.getElementById('p-price').value = '';
+      document.getElementById('p-image').value = '';
+      alert('Product Added Successfully!');
+    };
+
+    window.toggleStock = (id, current) => toggleStockStatus(id, current);
+    window.removeProduct = (id) => {
+      if(confirm('Are you sure you want to delete this product?')) {
+        deleteProductFromFirebase(id);
+      }
+    };
   </script>
 </body>
 </html>
