@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart & Checkout - Luxe Store</title>
+  <style>
+    :root {
+      --primary: #ff3e6c;
+      --secondary: #0d1117;
+      --accent: #2ea44f;
+      --bg-light: #f4f6f9;
+      --card-bg: #ffffff;
+      --text-main: #1f2937;
+      --text-muted: #6b7280;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg-light); color: var(--text-main); }
+
+    /* Header */
+    header {
+      background-color: var(--secondary);
+      color: white;
+      padding: 15px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo { font-size: 22px; font-weight: 800; color: var(--primary); }
+    .nav-links a { color: white; text-decoration: none; margin-left: 20px; font-weight: 600; }
+
+    /* Layout */
+    .cart-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+    .cart-grid { display: grid; grid-template-columns: 1.8fr 1.2fr; gap: 30px; }
+    .panel-card { background: var(--card-bg); padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+
+    .section-title { font-size: 20px; font-weight: 700; margin-bottom: 20px; border-left: 4px solid var(--primary); padding-left: 10px; }
+
+    /* Cart Items List */
+    .cart-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .cart-item:last-child { border-bottom: none; }
+    .item-img { width: 70px; height: 70px; object-fit: cover; border-radius: 8px; }
+    .item-details { flex-grow: 1; }
+    .item-title { font-weight: 700; font-size: 16px; }
+    .item-size { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    .item-price { font-weight: 800; color: var(--primary); margin-top: 4px; }
+    .remove-btn { color: #ef4444; background: none; border: none; cursor: pointer; font-size: 13px; font-weight: 600; }
+
+    /* Order Summary & Form */
+    .summary-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 15px; }
+    .summary-total { font-size: 18px; font-weight: 800; border-top: 2px solid #eee; padding-top: 12px; margin-top: 12px; }
+
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 4px; font-size: 13px; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+
+    .checkout-btn {
+      width: 100%;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 14px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 15px;
+    }
+    .checkout-btn:hover { background: #278843; }
+
+    .empty-msg { text-align: center; padding: 40px; color: var(--text-muted); font-size: 16px; }
+
+    @media (max-width: 850px) {
+      .cart-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">LUXE STORE</div>
+    <div class="nav-links">
+      <a href="products.html">Store</a>
+      <a href="cart.html">Cart</a>
+    </div>
+  </header>
+
+  <div class="cart-container">
+    <div class="cart-grid">
+
+      <!-- Left: Cart Items -->
+      <div class="panel-card">
+        <h2 class="section-title">Your Cart Items</h2>
+        <div id="cart-list">
+          <!-- Items injected dynamically -->
+        </div>
+      </div>
+
+      <!-- Right: Checkout & Address Form -->
+      <div class="panel-card">
+        <h2 class="section-title">Checkout Details</h2>
+        
+        <form id="checkout-form" onsubmit="placeOrder(event)">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="cust-name" required placeholder="John Doe">
+          </div>
+
+          <div class="form-group">
+            <label>Mobile Number</label>
+            <input type="tel" id="cust-phone" required placeholder="9876543210">
+          </div>
+
+          <div class="form-group">
+            <label>Delivery Address</label>
+            <textarea id="cust-address" rows="3" required placeholder="House No, Area, City, Pincode"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Payment Method</label>
+            <select id="payment-mode">
+              <option value="COD">Cash on Delivery (COD)</option>
+              <option value="UPI">Online Payment / UPI</option>
+            </select>
+          </div>
+
+          <!-- Price Summary -->
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span id="subtotal">₹0</span>
+          </div>
+          <div class="summary-row">
+            <span>Shipping</span>
+            <span style="color: var(--accent); font-weight: 600;">FREE</span>
+          </div>
+          <div class="summary-row summary-total">
+            <span>Total Amount</span>
+            <span id="total-amount">₹0</span>
+          </div>
+
+          <button type="submit" class="checkout-btn" id="place-order-btn">Confirm Order</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Sample Catalog to match Cart IDs with Price & Titles
+    const catalog = JSON.parse(localStorage.getItem('products_db')) || [
+      { id: "1", title: "Vintage Denim Jacket", price: 2499, image: "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=500" },
+      { id: "2", title: "Urban Streetwear Hoodie", price: 1899, image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=500" },
+      { id: "3", title: "Retro White Sneakers", price: 3499, image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500" }
+    ];
+
+    function renderCart() {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const container = document.getElementById('cart-list');
+      const checkoutBtn = document.getElementById('place-order-btn');
+
+      if (cart.length === 0) {
+        container.innerHTML = '<div class="empty-msg">Your cart is empty. <br><br><a href="products.html" style="color: var(--primary);">Browse Products</a></div>';
+        document.getElementById('subtotal').innerText = '₹0';
+        document.getElementById('total-amount').innerText = '₹0';
+        checkoutBtn.disabled = true;
+        checkoutBtn.style.opacity = '0.5';
+        return;
+      }
+
+      checkoutBtn.disabled = false;
+      checkoutBtn.style.opacity = '1';
+      container.innerHTML = '';
+      let total = 0;
+
+      cart.forEach((item, index) => {
+        const prod = catalog.find(p => p.id === item.productId) || {
+          title: "Product Item",
+          price: 999,
+          image: "https://via.placeholder.com/70"
+        };
+
+        total += prod.price;
+
+        container.innerHTML += `
+          <div class="cart-item">
+            <img src="${prod.image}" class="item-img" alt="${prod.title}">
+            <div class="item-details">
+              <div class="item-title">${prod.title}</div>
+              <div class="item-size">Size: <strong>${item.size}</strong></div>
+              <div class="item-price">₹${prod.price}</div>
+            </div>
+            <button class="remove-btn" onclick="removeItem(${index})">Remove</button>
+          </div>
+        `;
+      });
+
+      document.getElementById('subtotal').innerText = `₹${total}`;
+      document.getElementById('total-amount').innerText = `₹${total}`;
+    }
+
+    function removeItem(index) {
+      let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      cart.splice(index, 1);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      renderCart();
+    }
+
+    function placeOrder(event) {
+      event.preventDefault();
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+      if (cart.length === 0) {
+        alert('Your cart is empty!');
+        return;
+      }
+
+      const orderData = {
+        orderId: "ORD-" + Math.floor(100000 + Math.random() * 900000),
+        customerName: document.getElementById('cust-name').value,
+        phone: document.getElementById('cust-phone').value,
+        address: document.getElementById('cust-address').value,
+        paymentMode: document.getElementById('payment-mode').value,
+        items: cart,
+        totalAmount: document.getElementById('total-amount').innerText,
+        status: "Processing",
+        date: new Date().toLocaleDateString()
+      };
+
+      // Save Order locally or send via Mongoose API
+      let orders = JSON.parse(localStorage.getItem('orders_db') || '[]');
+      orders.push(orderData);
+      localStorage.setItem('orders_db', JSON.stringify(orders));
+
+      // Clear Cart
+      localStorage.removeItem('cart');
+
+      alert(`Order Placed Successfully!\nYour Order ID: ${orderData.orderId}`);
+      window.location.href = "order-history.html";
+    }
+
+    renderCart();
+  </script>
+</body>
+</html>

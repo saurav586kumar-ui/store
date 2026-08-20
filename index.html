@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUXE - Premium Fashion & Lifestyle</title>
+  <style>
+    :root {
+      --primary: #ff3e6c;
+      --primary-glow: rgba(255, 62, 108, 0.4);
+      --secondary: #0d1117;
+      --accent: #00f2fe;
+      --bg-dark: #0a0c10;
+      --card-dark: #161b22;
+      --text-light: #f0f6fc;
+      --text-muted: #8b949e;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg-dark); color: var(--text-light); overflow-x: hidden; }
+
+    /* Keyframe Animations */
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 15px var(--primary-glow); }
+      50% { box-shadow: 0 0 35px var(--primary); }
+      100% { box-shadow: 0 0 15px var(--primary-glow); }
+    }
+
+    @keyframes floatImage {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    /* Header */
+    header {
+      background-color: rgba(13, 17, 23, 0.85);
+      backdrop-filter: blur(10px);
+      padding: 20px 8%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      animation: fadeInDown 0.8s ease-out;
+    }
+    .logo { font-size: 26px; font-weight: 900; color: var(--primary); letter-spacing: 2px; }
+    .nav-links a { color: var(--text-light); text-decoration: none; margin-left: 25px; font-weight: 600; transition: 0.3s; }
+    .nav-links a:hover { color: var(--primary); }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 120px 8% 60px;
+      gap: 40px;
+    }
+
+    .hero-content {
+      flex: 1;
+      animation: fadeInUp 1s ease-out 0.2s backwards;
+    }
+
+    .hero-tag {
+      background: rgba(255, 62, 108, 0.15);
+      color: var(--primary);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 700;
+      display: inline-block;
+      margin-bottom: 20px;
+      border: 1px solid var(--primary-glow);
+    }
+
+    .hero-title {
+      font-size: 56px;
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #ffffff 0%, var(--text-muted) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-description {
+      font-size: 18px;
+      color: var(--text-muted);
+      margin-bottom: 35px;
+      max-width: 500px;
+      line-height: 1.6;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      padding: 16px 36px;
+      border-radius: 30px;
+      font-weight: 800;
+      font-size: 16px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      animation: pulseGlow 2.5s infinite;
+    }
+
+    .cta-btn:hover {
+      transform: translateY(-3px) scale(1.03);
+      background: #e0325c;
+    }
+
+    .hero-image-box {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      animation: fadeInUp 1s ease-out 0.4s backwards;
+    }
+
+    .hero-img {
+      width: 100%;
+      max-width: 480px;
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      animation: floatImage 4s ease-in-out infinite;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* Categories Banner */
+    .categories-section {
+      padding: 80px 8%;
+      background: var(--card-dark);
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .section-heading {
+      text-align: center;
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 50px;
+      color: var(--text-light);
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+
+    .cat-card {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      height: 320px;
+      cursor: pointer;
+      transition: transform 0.4s;
+    }
+
+    .cat-card:hover { transform: translateY(-8px); }
+
+    .cat-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s;
+    }
+
+    .cat-card:hover img { transform: scale(1.1); }
+
+    .cat-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(13,11,23,0.95), transparent 70%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 25px;
+    }
+
+    .cat-title { font-size: 22px; font-weight: 800; color: white; margin-bottom: 6px; }
+    .cat-sub { font-size: 14px; color: var(--primary); font-weight: 600; }
+
+    @media (max-width: 900px) {
+      .hero { flex-direction: column; text-align: center; padding-top: 140px; }
+      .hero-title { font-size: 40px; }
+      .hero-description { margin: 0 auto 30px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">LUXE STORE</div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="products.html">Store</a>
+      <a href="cart.html">Cart</a>
+      <a href="admin.html">Admin</a>
+    </div>
+  </header>
+
+  <!-- Animated Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <span class="hero-tag">NEW SEASON 2026</span>
+      <h1 class="hero-title">ELEVATE YOUR <span>EVERYDAY STYLE</span></h1>
+      <p class="hero-description">Discover curated high-fashion drops, streetwear classics, and modern accessories built for precision fit.</p>
+      <a href="products.html" class="cta-btn">EXPLORE STORE →</a>
+    </div>
+
+    <div class="hero-image-box">
+      <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800" alt="Hero Fashion" class="hero-img">
+    </div>
+  </section>
+
+  <!-- Category Showcase -->
+  <section class="categories-section">
+    <h2 class="section-heading">FEATURED CATEGORIES</h2>
+    <div class="category-grid">
+      
+      <div class="cat-card" onclick="window.location.href='products.html'">
+        <img src="https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=600" alt="Clothing">
+        <div class="cat-overlay">
+          <div class="cat-title">Urban Clothing</div>
+          <div class="cat-sub">Shop Jackets, Hoodies & Tees →</div>
+        </div>
+      </div>
+
+      <div class="cat-card" onclick="window.location.href='products.html'">
+        <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600" alt="Footwear">
+        <div class="cat-overlay">
+          <div class="cat-title">Sneakers & Kicks</div>
+          <div class="cat-sub">Explore Retro & Modern Pairs →</div>
+        </div>
+      </div>
+
+      <div class="cat-card" onclick="window.location.href='products.html'">
+        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600" alt="Accessories">
+        <div class="cat-overlay">
+          <div class="cat-title">Accessories</div>
+          <div class="cat-sub">Watches, Bags & More →</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</body>
+</html>

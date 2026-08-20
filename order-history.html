@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order History & Tracking - Luxe Store</title>
+  <style>
+    :root {
+      --primary: #ff3e6c;
+      --secondary: #0d1117;
+      --accent: #2ea44f;
+      --bg-light: #f4f6f9;
+      --card-bg: #ffffff;
+      --text-main: #1f2937;
+      --text-muted: #6b7280;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg-light); color: var(--text-main); }
+
+    /* Header */
+    header {
+      background-color: var(--secondary);
+      color: white;
+      padding: 15px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo { font-size: 22px; font-weight: 800; color: var(--primary); }
+    .nav-links a { color: white; text-decoration: none; margin-left: 20px; font-weight: 600; }
+
+    /* Layout */
+    .history-container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+    .section-title { font-size: 22px; font-weight: 700; margin-bottom: 20px; border-left: 4px solid var(--primary); padding-left: 10px; }
+
+    /* Order Card */
+    .order-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border: 1px solid #e5e7eb;
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 12px;
+      margin-bottom: 15px;
+    }
+
+    .order-id { font-weight: 800; color: var(--secondary); font-size: 16px; }
+    .order-date { font-size: 13px; color: var(--text-muted); }
+
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .status-processing { background-color: #fef3c7; color: #d97706; }
+    .status-shipped { background-color: #dbeafe; color: #2563eb; }
+    .status-delivered { background-color: #d1fae5; color: #059669; }
+
+    .order-details { font-size: 14px; margin-bottom: 12px; }
+    .order-details p { margin-bottom: 4px; }
+
+    .item-count { font-weight: 600; color: var(--text-main); }
+    .total-price { font-size: 18px; font-weight: 800; color: var(--primary); margin-top: 10px; }
+
+    .empty-msg {
+      background: var(--card-bg);
+      text-align: center;
+      padding: 50px 20px;
+      border-radius: 12px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">LUXE STORE</div>
+    <div class="nav-links">
+      <a href="products.html">Store</a>
+      <a href="cart.html">Cart</a>
+      <a href="order-history.html">Orders</a>
+    </div>
+  </header>
+
+  <div class="history-container">
+    <h2 class="section-title">My Order History</h2>
+    <div id="orders-list">
+      <!-- Orders injected dynamically -->
+    </div>
+  </div>
+
+  <script>
+    function renderOrders() {
+      const orders = JSON.parse(localStorage.getItem('orders_db') || '[]');
+      const container = document.getElementById('orders-list');
+
+      if (orders.length === 0) {
+        container.innerHTML = `
+          <div class="empty-msg">
+            <h3>No past orders found</h3>
+            <p style="margin-top: 8px;">Looks like you haven't placed any orders yet.</p>
+            <br>
+            <a href="products.html" style="color: var(--primary); font-weight: bold; text-decoration: none;">Start Shopping</a>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = '';
+
+      // Display latest orders first
+      orders.reverse().forEach(order => {
+        let statusClass = 'status-processing';
+        if (order.status === 'Shipped') statusClass = 'status-shipped';
+        if (order.status === 'Delivered') statusClass = 'status-delivered';
+
+        container.innerHTML += `
+          <div class="order-card">
+            <div class="order-header">
+              <div>
+                <div class="order-id">ID: ${order.orderId}</div>
+                <div class="order-date">Placed on: ${order.date || 'Recently'}</div>
+              </div>
+              <span class="status-badge ${statusClass}">${order.status || 'Processing'}</span>
+            </div>
+
+            <div class="order-details">
+              <p><strong>Deliver To:</strong> ${order.customerName}</p>
+              <p><strong>Address:</strong> ${order.address}</p>
+              <p><strong>Payment Method:</strong> ${order.paymentMode}</p>
+              <p class="item-count" style="margin-top: 8px;"><strong>Total Items:</strong> ${order.items ? order.items.length : 1}</p>
+            </div>
+
+            <div class="total-price">
+              Total: ${order.totalAmount}
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    renderOrders();
+  </script>
+</body>
+</html>
