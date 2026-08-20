@@ -3,30 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LUXE - Premium Fashion & Lifestyle</title>
+  <title>JUSTKHARIDO | Shop Beyond Limits</title>
   <style>
     :root {
       --primary: #ff3e6c;
-      --primary-glow: rgba(255, 62, 108, 0.4);
-      --secondary: #0d1117;
+      --primary-glow: rgba(255, 62, 108, 0.45);
       --accent: #00f2fe;
-      --bg-dark: #0a0c10;
-      --card-dark: #161b22;
-      --text-light: #f0f6fc;
+      --bg-dark: #090d16;
+      --card-bg: rgba(22, 27, 34, 0.75);
+      --text: #f0f6fc;
       --text-muted: #8b949e;
+      --border: rgba(255, 255, 255, 0.08);
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: var(--bg-dark); color: var(--text-light); overflow-x: hidden; }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', system-ui, sans-serif; }
+    body { background-color: var(--bg-dark); color: var(--text); overflow-x: hidden; }
 
-    /* Keyframe Animations */
-    @keyframes fadeInDown {
-      from { opacity: 0; transform: translateY(-30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
+    /* CSS Keyframe Animations */
     @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(40px); }
+      from { opacity: 0; transform: translateY(30px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
@@ -36,28 +31,41 @@
       100% { box-shadow: 0 0 15px var(--primary-glow); }
     }
 
-    @keyframes floatImage {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-15px); }
+    @keyframes floatImg {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-12px) rotate(1deg); }
     }
 
-    /* Header */
+    /* Glassmorphism Header */
     header {
-      background-color: rgba(13, 17, 23, 0.85);
-      backdrop-filter: blur(10px);
-      padding: 20px 8%;
+      background: rgba(9, 13, 22, 0.85);
+      backdrop-filter: blur(12px);
+      padding: 18px 8%;
       display: flex;
       justify-content: space-between;
       align-items: center;
       position: fixed;
-      top: 0;
-      width: 100%;
-      z-index: 1000;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      animation: fadeInDown 0.8s ease-out;
+      top: 0; width: 100%; z-index: 1000;
+      border-bottom: 1px solid var(--border);
     }
-    .logo { font-size: 26px; font-weight: 900; color: var(--primary); letter-spacing: 2px; }
-    .nav-links a { color: var(--text-light); text-decoration: none; margin-left: 25px; font-weight: 600; transition: 0.3s; }
+
+    .logo {
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links a {
+      color: var(--text);
+      text-decoration: none;
+      margin-left: 24px;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
     .nav-links a:hover { color: var(--primary); }
 
     /* Hero Section */
@@ -66,25 +74,23 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 120px 8% 60px;
+      padding: 130px 8% 60px;
       gap: 40px;
     }
 
-    .hero-content {
-      flex: 1;
-      animation: fadeInUp 1s ease-out 0.2s backwards;
-    }
+    .hero-content { flex: 1; animation: fadeInUp 0.8s ease-out; }
 
-    .hero-tag {
-      background: rgba(255, 62, 108, 0.15);
+    .hero-badge {
+      background: rgba(255, 62, 108, 0.12);
       color: var(--primary);
       padding: 6px 16px;
       border-radius: 20px;
-      font-size: 14px;
-      font-weight: 700;
+      font-size: 13px;
+      font-weight: 800;
       display: inline-block;
       margin-bottom: 20px;
       border: 1px solid var(--primary-glow);
+      letter-spacing: 1px;
     }
 
     .hero-title {
@@ -103,7 +109,7 @@
       -webkit-text-fill-color: transparent;
     }
 
-    .hero-description {
+    .hero-desc {
       font-size: 18px;
       color: var(--text-muted);
       margin-bottom: 35px;
@@ -114,56 +120,40 @@
     .cta-btn {
       display: inline-block;
       background: var(--primary);
-      color: white;
+      color: #fff;
       padding: 16px 36px;
       border-radius: 30px;
       font-weight: 800;
-      font-size: 16px;
+      font-size: 15px;
       text-decoration: none;
       transition: all 0.3s ease;
       animation: pulseGlow 2.5s infinite;
     }
 
     .cta-btn:hover {
-      transform: translateY(-3px) scale(1.03);
+      transform: translateY(-3px) scale(1.02);
       background: #e0325c;
     }
 
-    .hero-image-box {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      animation: fadeInUp 1s ease-out 0.4s backwards;
-    }
+    .hero-img-box { flex: 1; display: flex; justify-content: center; }
 
     .hero-img {
       width: 100%;
       max-width: 480px;
       border-radius: 24px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-      animation: floatImage 4s ease-in-out infinite;
-      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+      animation: floatImg 4s ease-in-out infinite;
+      border: 1px solid var(--border);
     }
 
-    /* Categories Banner */
-    .categories-section {
-      padding: 80px 8%;
-      background: var(--card-dark);
-      border-top: 1px solid rgba(255,255,255,0.05);
-    }
+    /* Categories Showcase */
+    .categories { padding: 80px 8%; background: var(--bg-dark); }
+    .section-title { font-size: 32px; font-weight: 800; text-align: center; margin-bottom: 40px; }
 
-    .section-heading {
-      text-align: center;
-      font-size: 32px;
-      font-weight: 800;
-      margin-bottom: 50px;
-      color: var(--text-light);
-    }
-
-    .category-grid {
+    .cat-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 30px;
+      gap: 24px;
     }
 
     .cat-card {
@@ -172,92 +162,80 @@
       overflow: hidden;
       height: 320px;
       cursor: pointer;
-      transition: transform 0.4s;
+      border: 1px solid var(--border);
+      transition: transform 0.4s ease;
     }
 
     .cat-card:hover { transform: translateY(-8px); }
-
-    .cat-card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.6s;
-    }
-
-    .cat-card:hover img { transform: scale(1.1); }
+    .cat-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+    .cat-card:hover img { transform: scale(1.08); }
 
     .cat-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(13,11,23,0.95), transparent 70%);
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 25px;
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(9,13,22,0.95), transparent 70%);
+      display: flex; flex-direction: column; justify-content: flex-end; padding: 24px;
     }
-
-    .cat-title { font-size: 22px; font-weight: 800; color: white; margin-bottom: 6px; }
-    .cat-sub { font-size: 14px; color: var(--primary); font-weight: 600; }
 
     @media (max-width: 900px) {
       .hero { flex-direction: column; text-align: center; padding-top: 140px; }
       .hero-title { font-size: 40px; }
-      .hero-description { margin: 0 auto 30px; }
+      .hero-desc { margin: 0 auto 30px; }
     }
   </style>
 </head>
 <body>
 
+  <!-- Navigation Header -->
   <header>
-    <div class="logo">LUXE STORE</div>
+    <div class="logo">JUSTKHARIDO</div>
     <div class="nav-links">
       <a href="index.html">Home</a>
       <a href="products.html">Store</a>
       <a href="cart.html">Cart</a>
-      <a href="admin.html">Admin</a>
+      <a href="order-history.html">Orders</a>
     </div>
   </header>
 
-  <!-- Animated Hero Section -->
+  <!-- Hero Section -->
   <section class="hero">
     <div class="hero-content">
-      <span class="hero-tag">NEW SEASON 2026</span>
-      <h1 class="hero-title">ELEVATE YOUR <span>EVERYDAY STYLE</span></h1>
-      <p class="hero-description">Discover curated high-fashion drops, streetwear classics, and modern accessories built for precision fit.</p>
-      <a href="products.html" class="cta-btn">EXPLORE STORE →</a>
+      <span class="hero-badge">NEW DROPS 2026</span>
+      <h1 class="hero-title">JUST THINK IT. <span>JUSTKHARIDO.</span></h1>
+      <p class="hero-desc">Discover exclusive fashion collections, high-end streetwear, and premium lifestyle gear with fast delivery.</p>
+      <a href="products.html" class="cta-btn">SHOP NOW →</a>
     </div>
 
-    <div class="hero-image-box">
-      <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800" alt="Hero Fashion" class="hero-img">
+    <div class="hero-img-box">
+      <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800" alt="JustKharido Fashion" class="hero-img">
     </div>
   </section>
 
-  <!-- Category Showcase -->
-  <section class="categories-section">
-    <h2 class="section-heading">FEATURED CATEGORIES</h2>
-    <div class="category-grid">
-      
+  <!-- Featured Categories -->
+  <section class="categories">
+    <h2 class="section-title">TOP CATEGORIES</h2>
+    <div class="cat-grid">
+
       <div class="cat-card" onclick="window.location.href='products.html'">
-        <img src="https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=600" alt="Clothing">
+        <img src="https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=600" alt="Streetwear Apparel">
         <div class="cat-overlay">
-          <div class="cat-title">Urban Clothing</div>
-          <div class="cat-sub">Shop Jackets, Hoodies & Tees →</div>
+          <div style="font-size:22px; font-weight:800;">Streetwear & Outerwear</div>
+          <div style="font-size:14px; color:var(--primary); font-weight:700; margin-top:4px;">Explore Store →</div>
         </div>
       </div>
 
       <div class="cat-card" onclick="window.location.href='products.html'">
-        <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600" alt="Footwear">
+        <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600" alt="Sneakers Collection">
         <div class="cat-overlay">
-          <div class="cat-title">Sneakers & Kicks</div>
-          <div class="cat-sub">Explore Retro & Modern Pairs →</div>
+          <div style="font-size:22px; font-weight:800;">Sneakers & Kicks</div>
+          <div style="font-size:14px; color:var(--primary); font-weight:700; margin-top:4px;">Explore Store →</div>
         </div>
       </div>
 
       <div class="cat-card" onclick="window.location.href='products.html'">
-        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600" alt="Accessories">
+        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600" alt="Lifestyle Accessories">
         <div class="cat-overlay">
-          <div class="cat-title">Accessories</div>
-          <div class="cat-sub">Watches, Bags & More →</div>
+          <div style="font-size:22px; font-weight:800;">Trending Accessories</div>
+          <div style="font-size:14px; color:var(--primary); font-weight:700; margin-top:4px;">Explore Store →</div>
         </div>
       </div>
 
