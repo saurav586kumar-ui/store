@@ -82,7 +82,7 @@
     .img-preview-box { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
     .product-thumb { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; border: 1px solid var(--border); }
 
-    /* Modal for Editing */
+    /* Modal Styling */
     .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; justify-content:center; align-items:center; }
     .modal-content { background: var(--card-bg); width: 90%; max-width: 500px; padding: 25px; border-radius: 16px; border: 1px solid var(--border); }
   </style>
@@ -146,14 +146,14 @@
   <!-- Edit Product Modal -->
   <div id="edit-modal" class="modal">
     <div class="modal-content">
-      <h3 style="margin-bottom:15px;">Edit Product</h3>
+      <h3 style="margin-bottom:15px;">Edit Product Details</h3>
       <input type="hidden" id="edit-id">
       <input type="text" id="edit-title" placeholder="Title" class="input-field">
       <div class="grid-2">
-        <input type="number" id="edit-original-price" placeholder="Actual Price" class="input-field">
-        <input type="number" id="edit-discount-price" placeholder="Discount Price" class="input-field">
+        <input type="number" id="edit-original-price" placeholder="Actual Price (MRP ₹)" class="input-field">
+        <input type="number" id="edit-discount-price" placeholder="Discount Price (Selling ₹)" class="input-field">
       </div>
-      <input type="text" id="edit-extra" placeholder="Extra Info (Size, Details)" class="input-field">
+      <input type="text" id="edit-extra" placeholder="Extra Info (Size, Color, etc.)" class="input-field">
       <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:10px;">
         <button class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
         <button class="btn" onclick="saveProductEdit()">Save Changes</button>
@@ -171,7 +171,7 @@
       updateProductInFirebase,
       toggleStockStatus, 
       deleteProductFromFirebase, 
-      uploadMultipleImages 
+      convertFilesToBase64 
     } from './api.js';
 
     let globalProducts = [];
@@ -203,10 +203,12 @@
         tbody.innerHTML = '';
         
         products.forEach(p => {
-          const imgs = (p.images || [p.image]).map(img => `<img src="${img}" class="product-thumb">`).join(' ');
+          const rawImgs = p.images || (p.image ? [p.image] : []);
+          const imgsHTML = rawImgs.map(img => `<img src="${img}" class="product-thumb">`).join(' ');
+          
           tbody.innerHTML += `
             <tr>
-              <td><div class="img-preview-box">${imgs}</div></td>
+              <td><div class="img-preview-box">${imgsHTML || 'No Image'}</div></td>
               <td style="font-weight:700;">${p.title}</td>
               <td>
                 <span style="text-decoration:line-through; color:var(--text-muted); font-size:12px;">₹${p.originalPrice || p.price}</span>
@@ -240,20 +242,20 @@
         return alert('Please fill Title, Discount Price, and select at least one Image file!');
       }
 
-      uploadBtn.innerText = "Uploading Images...";
+      uploadBtn.innerText = "Processing Images...";
       uploadBtn.disabled = true;
 
       try {
-        const imageUrls = await uploadMultipleImages(fileInput.files);
+        const imageUrls = await convertFilesToBase64(fileInput.files);
 
         await addProductToFirebase({ 
           title, 
           originalPrice: originalPrice || discountPrice,
           discountPrice,
-          price: discountPrice, // Backward compatibility for front-end
+          price: discountPrice, // Front-end support
           extraInfo, 
           images: imageUrls,
-          image: imageUrls[0], // Main cover image
+          image: imageUrls[0], 
           isStock: true 
         });
 
