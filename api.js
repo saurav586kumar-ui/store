@@ -9,12 +9,6 @@ import {
   deleteDoc 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { 
-  getStorage, 
-  ref, 
-  uploadBytes, 
-  getDownloadURL 
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
-import { 
   getAuth, 
   signInWithPopup, 
   GoogleAuthProvider, 
@@ -34,7 +28,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
-export const storage = getStorage(app);
 export const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
@@ -43,19 +36,20 @@ export const adminLoginWithGoogle = async () => signInWithPopup(auth, provider);
 export const adminLogout = async () => signOut(auth);
 export const listenAuthState = (cb) => onAuthStateChanged(auth, cb);
 
-// Upload Multiple Files to Firebase Storage
-export const uploadMultipleImages = async (files) => {
-  const imageUrls = [];
-  for (let file of files) {
-    const storageRef = ref(storage, `products/${Date.now()}_${file.name}`);
-    const snapshot = await uploadBytes(storageRef, file);
-    const url = await getDownloadURL(snapshot.ref);
-    imageUrls.push(url);
-  }
-  return imageUrls;
+// Convert Files to Base64 (Super Fast Local Upload)
+export const convertFilesToBase64 = async (files) => {
+  const promises = Array.from(files).map(file => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+      reader.readAsDataURL(file);
+    });
+  });
+  return Promise.all(promises);
 };
 
-// Firestore Products CRUD
+// Firestore Products
 export const subscribeProducts = (cb) => {
   return onSnapshot(collection(db, "products"), (snapshot) => {
     cb(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
@@ -75,10 +69,3 @@ export const toggleStockStatus = async (id, currentStatus) => {
 };
 
 export const deleteProductFromFirebase = async (id) => deleteDoc(doc(db, "products"), id);
-
-// Firestore Orders
-export const subscribeOrders = (cb) => {
-  return onSnapshot(collection(db, "orders"), (snapshot) => {
-    cb(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
-  });
-};
