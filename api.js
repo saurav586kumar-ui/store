@@ -9,6 +9,12 @@ import {
   deleteDoc 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { 
+  getStorage, 
+  ref, 
+  uploadBytes, 
+  getDownloadURL 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+import { 
   getAuth, 
   signInWithPopup, 
   GoogleAuthProvider, 
@@ -16,7 +22,6 @@ import {
   onAuthStateChanged 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-// Your Exact Firebase Configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCjr6addRfZbk7Ce4Lzku9HnBqzqHN5LtY",
   authDomain: "store-1a8c3.firebaseapp.com",
@@ -27,35 +32,41 @@ const firebaseConfig = {
   measurementId: "G-0Z9QMGFL4W"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
+export const storage = getStorage(app);
 export const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// Google Auth Functions
-export const adminLoginWithGoogle = async () => {
-  return await signInWithPopup(auth, provider);
+// Google Auth
+export const adminLoginWithGoogle = async () => signInWithPopup(auth, provider);
+export const adminLogout = async () => signOut(auth);
+export const listenAuthState = (cb) => onAuthStateChanged(auth, cb);
+
+// Upload Multiple Files to Firebase Storage
+export const uploadMultipleImages = async (files) => {
+  const imageUrls = [];
+  for (let file of files) {
+    const storageRef = ref(storage, `products/${Date.now()}_${file.name}`);
+    const snapshot = await uploadBytes(storageRef, file);
+    const url = await getDownloadURL(snapshot.ref);
+    imageUrls.push(url);
+  }
+  return imageUrls;
 };
 
-export const adminLogout = async () => {
-  return await signOut(auth);
-};
-
-export const listenAuthState = (callback) => {
-  onAuthStateChanged(auth, callback);
-};
-
-// Firestore Products Functions
-export const subscribeProducts = (callback) => {
+// Firestore Products CRUD
+export const subscribeProducts = (cb) => {
   return onSnapshot(collection(db, "products"), (snapshot) => {
-    const products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    callback(products);
+    cb(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
   });
 };
 
-export const addProductToFirebase = async (productData) => {
-  return await addDoc(collection(db, "products"), productData);
+export const addProductToFirebase = async (productData) => addDoc(collection(db, "products"), productData);
+
+export const updateProductInFirebase = async (id, updatedData) => {
+  const productRef = doc(db, "products", id);
+  return await updateDoc(productRef, updatedData);
 };
 
 export const toggleStockStatus = async (id, currentStatus) => {
@@ -63,23 +74,11 @@ export const toggleStockStatus = async (id, currentStatus) => {
   return await updateDoc(productRef, { isStock: !currentStatus });
 };
 
-export const deleteProductFromFirebase = async (id) => {
-  return await deleteDoc(doc(db, "products"), id);
-};
+export const deleteProductFromFirebase = async (id) => deleteDoc(doc(db, "products"), id);
 
-// Firestore Orders Functions
-export const placeOrderInFirebase = async (orderData) => {
-  const docRef = await addDoc(collection(db, "orders"), {
-    ...orderData,
-    status: "Processing",
-    createdAt: new Date().toISOString()
-  });
-  return docRef.id;
-};
-
-export const subscribeOrders = (callback) => {
+// Firestore Orders
+export const subscribeOrders = (cb) => {
   return onSnapshot(collection(db, "orders"), (snapshot) => {
-    const orders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    callback(orders);
+    cb(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
   });
 };
