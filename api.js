@@ -1,24 +1,22 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
 import { 
   getFirestore, 
   collection, 
   addDoc, 
-  updateDoc, 
+  onSnapshot, 
   doc, 
-  deleteDoc, 
-  onSnapshot 
+  updateDoc, 
+  deleteDoc 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { 
   getAuth, 
-  signInWithEmailAndPassword, 
+  signInWithPopup, 
+  GoogleAuthProvider, 
   signOut, 
   onAuthStateChanged 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-// ==========================================
-// 1. FIREBASE CONFIGURATION & INITIALIZATION
-// ==========================================
+// Your Exact Firebase Configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCjr6addRfZbk7Ce4Lzku9HnBqzqHN5LtY",
   authDomain: "store-1a8c3.firebaseapp.com",
@@ -29,142 +27,59 @@ const firebaseConfig = {
   measurementId: "G-0Z9QMGFL4W"
 };
 
-// App aur Core Services Initialize karein
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-export const analytics = typeof window !== "undefined" ? getAnalytics(app) : null;
 export const db = getFirestore(app);
 export const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
-// ==========================================
-// 2. PRODUCTS & INVENTORY MANAGEMENT
-// ==========================================
+// Google Auth Functions
+export const adminLoginWithGoogle = async () => {
+  return await signInWithPopup(auth, provider);
+};
 
-/**
- * Real-time products listener (Store Page & Inventory Control ke liye)
- */
-export function subscribeProducts(callback) {
-  try {
-    const productsRef = collection(db, "products");
-    return onSnapshot(productsRef, (snapshot) => {
-      const products = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-      callback(products);
-    }, (error) => {
-      console.error("Error fetching products:", error);
-    });
-  } catch (error) {
-    console.error("Subscription failed:", error);
-  }
-}
+export const adminLogout = async () => {
+  return await signOut(auth);
+};
 
-/**
- * Naya product upload karne ke liye (Admin Only)
- */
-export async function addProductToFirebase(product) {
-  try {
-    const docRef = await addDoc(collection(db, "products"), product);
-    return docRef.id;
-  } catch (error) {
-    console.error("Error adding product:", error);
-    throw error;
-  }
-}
+export const listenAuthState = (callback) => {
+  onAuthStateChanged(auth, callback);
+};
 
-/**
- * Product stock status badalne ke liye (In Stock / Out of Stock)
- */
-export async function toggleStockStatus(productId, currentStatus) {
-  try {
-    const productRef = doc(db, "products", productId);
-    await updateDoc(productRef, { isStock: !currentStatus });
-  } catch (error) {
-    console.error("Error updating stock status:", error);
-    throw error;
-  }
-}
+// Firestore Products Functions
+export const subscribeProducts = (callback) => {
+  return onSnapshot(collection(db, "products"), (snapshot) => {
+    const products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    callback(products);
+  });
+};
 
-/**
- * Product delete karne ke liye
- */
-export async function deleteProductFromFirebase(productId) {
-  try {
-    const productRef = doc(db, "products", productId);
-    await deleteDoc(productRef);
-  } catch (error) {
-    console.error("Error deleting product:", error);
-    throw error;
-  }
-}
+export const addProductToFirebase = async (productData) => {
+  return await addDoc(collection(db, "products"), productData);
+};
 
-// ==========================================
-// 3. ORDERS & CHECKOUT MANAGEMENT
-// ==========================================
+export const toggleStockStatus = async (id, currentStatus) => {
+  const productRef = doc(db, "products", id);
+  return await updateDoc(productRef, { isStock: !currentStatus });
+};
 
-/**
- * Customer order save karne ke liye (Cart Checkout)
- */
-export async function placeOrderInFirebase(orderData) {
-  try {
-    const orderPayload = {
-      ...orderData,
-      createdAt: new Date().toISOString(),
-      status: "Processing"
-    };
-    const docRef = await addDoc(collection(db, "orders"), orderPayload);
-    return docRef.id;
-  } catch (error) {
-    console.error("Error placing order:", error);
-    throw error;
-  }
-}
+export const deleteProductFromFirebase = async (id) => {
+  return await deleteDoc(doc(db, "products"), id);
+};
 
-/**
- * Real-time orders stream (Admin Dashboard par naye orders dekhne ke liye)
- */
-export function subscribeOrders(callback) {
-  try {
-    const ordersRef = collection(db, "orders");
-    return onSnapshot(ordersRef, (snapshot) => {
-      const orders = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-      callback(orders);
-    }, (error) => {
-      console.error("Error fetching orders:", error);
-    });
-  } catch (error) {
-    console.error("Order subscription failed:", error);
-  }
-}
+// Firestore Orders Functions
+export const placeOrderInFirebase = async (orderData) => {
+  const docRef = await addDoc(collection(db, "orders"), {
+    ...orderData,
+    status: "Processing",
+    createdAt: new Date().toISOString()
+  });
+  return docRef.id;
+};
 
-// ==========================================
-// 4. ADMIN AUTHENTICATION
-// ==========================================
-
-/**
- * Admin Panel me login karne ke liye
- */
-export async function adminLogin(email, password) {
-  try {
-    return await signInWithEmailAndPassword(auth, email, password);
-  } catch (error) {
-    console.error("Login failed:", error);
-    throw error;
-  }
-}
-
-/**
- * Admin Session logout karne ke liye
- */
-export async function adminLogout() {
-  try {
-    await signOut(auth);
-  } catch (error) {
-    console.error("Logout failed:", error);
-    throw error;
-  }
-}
-
-/**
- * Auth state check karne ke liye (Unauthorized users ko rokna)
- */
-export function listenAuthState(callback) {
-  return onAuthStateChanged(auth, callback);
-}
+export const subscribeOrders = (callback) => {
+  return onSnapshot(collection(db, "orders"), (snapshot) => {
+    const orders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    callback(orders);
+  });
+};
