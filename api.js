@@ -31,12 +31,12 @@ export const db = getFirestore(app);
 export const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// Google Auth
+// Authentication Functions
 export const adminLoginWithGoogle = async () => signInWithPopup(auth, provider);
 export const adminLogout = async () => signOut(auth);
 export const listenAuthState = (cb) => onAuthStateChanged(auth, cb);
 
-// Convert Files to Base64 (Super Fast Local Upload)
+// Image Files Ko Fast Base64 Format Mein Convert Karne Ke Liye
 export const convertFilesToBase64 = async (files) => {
   const promises = Array.from(files).map(file => {
     return new Promise((resolve, reject) => {
@@ -49,7 +49,7 @@ export const convertFilesToBase64 = async (files) => {
   return Promise.all(promises);
 };
 
-// Firestore Products
+// Firestore Products CRUD Operations
 export const subscribeProducts = (cb) => {
   return onSnapshot(collection(db, "products"), (snapshot) => {
     cb(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
