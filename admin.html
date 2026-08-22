@@ -31,11 +31,14 @@
     <div id="dashboardSection" class="hidden max-w-7xl mx-auto p-6 w-full">
         <div class="flex justify-between items-center mb-6 bg-white p-4 rounded-lg shadow">
             <h1 class="text-2xl font-bold text-gray-800">JustKharido - Order Management</h1>
-            <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition text-sm font-medium">Logout</button>
+            <div class="flex gap-3">
+                <button id="addTestOrderBtn" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm font-medium">+ Add Test Order</button>
+                <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition text-sm font-medium">Logout</button>
+            </div>
         </div>
 
         <div class="bg-white rounded-lg shadow overflow-hidden">
-            <div class="p-4 border-b bg-gray-50 font-semibold text-gray-700">All Devices Order History (Realtime Database)</div>
+            <div class="p-4 border-b bg-gray-50 font-semibold text-gray-700">All Devices Order History</div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
@@ -56,11 +59,11 @@
         </div>
     </div>
 
-    <!-- Firebase SDK & Realtime Database Logic -->
+    <!-- Firebase SDK & Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, get, update, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBkSkf7-O3eR8LLAB9eqXqvScuYXkbqSAo",
@@ -84,9 +87,9 @@
         const errorMsg = document.getElementById('errorMsg');
         const googleLoginBtn = document.getElementById('googleLoginBtn');
         const logoutBtn = document.getElementById('logoutBtn');
+        const addTestOrderBtn = document.getElementById('addTestOrderBtn');
         const ordersTableBody = document.getElementById('ordersTableBody');
 
-        // Check Auth State & Admin Permission
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 if (user.email === ADMIN_EMAIL) {
@@ -95,8 +98,7 @@
                     fetchOrders();
                 } else {
                     await signOut(auth);
-                    loginSection.classList.add('hidden');
-                    dashboardSection.classList.remove('hidden'); // Fix toggle layout
+                    loginSection.classList.remove('hidden');
                     dashboardSection.classList.add('hidden');
                     errorMsg.innerText = "Access Denied: Yeh account authorized admin nahi hai!";
                     errorMsg.classList.remove('hidden');
@@ -107,7 +109,6 @@
             }
         });
 
-        // Google Sign In Click
         googleLoginBtn.addEventListener('click', async () => {
             const provider = new GoogleAuthProvider();
             try {
@@ -120,12 +121,27 @@
             }
         });
 
-        // Logout
         logoutBtn.addEventListener('click', async () => {
             await signOut(auth);
         });
 
-        // Fetch Orders from Realtime Database
+        // Test Order Add karne ka button
+        addTestOrderBtn.addEventListener('click', async () => {
+            try {
+                const ordersRef = ref(db, 'orders');
+                await push(ordersRef, {
+                    customerName: "Saurav Kumar (Test)",
+                    itemsSummary: "Sample Product - 1",
+                    totalAmount: 999,
+                    status: "Pending"
+                });
+                alert("Test Order Successfully Add Ho Gaya!");
+                fetchOrders();
+            } catch (e) {
+                alert("Error: " + e.message);
+            }
+        });
+
         async function fetchOrders() {
             try {
                 const ordersRef = ref(db, 'orders');
@@ -133,7 +149,7 @@
                 
                 ordersTableBody.innerHTML = "";
                 if (!snapshot.exists()) {
-                    ordersTableBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Koi order nahi mila.</td></tr>`;
+                    ordersTableBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Koi order nahi mila. Upar '+ Add Test Order' dabayein.</td></tr>`;
                     return;
                 }
 
