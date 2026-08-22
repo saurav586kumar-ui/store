@@ -4,190 +4,194 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JustKharido - Admin Panel</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h2 { text-align: center; color: #333; }
+        .login-box {
+            text-align: center;
+            padding: 50px;
+        }
+        button {
+            background-color: #4285F4;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover { background-color: #357ae8; }
+        .order-card {
+            background: #fafafa;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+        }
+        .order-card p { margin: 5px 0; }
+        .unauthorized {
+            color: red;
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        #admin-content { display: none; }
+    </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+<body>
+
+<div class="container">
+    <h2>JustKharido Admin Dashboard</h2>
 
     <!-- Login Section -->
-    <div id="loginSection" class="bg-white p-8 rounded-lg shadow-lg max-w-md w-full text-center">
-        <h1 class="text-2xl font-bold mb-2">JustKharido <span class="text-red-500">Admin</span></h1>
-        <p class="text-gray-600 mb-6 text-sm">Sirf Authorized Admin Gmail se login karein</p>
-        
-        <!-- Google Login Button -->
-        <button id="googleLoginBtn" class="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 text-gray-700 py-2.5 px-4 rounded-lg hover:bg-gray-50 transition font-medium shadow-sm">
-            <svg class="w-5 h-5" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
-                <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.18v3.15C3.17 21.32 7.23 24 12 24z"/>
-                <path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.61H1.18C.43 8.13 0 9.87 0 11.7s.43 3.57 1.18 5.09l4.09-2.55z"/>
-                <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.23 0 3.17 2.68 1.18 6.61l4.09 2.55c.95-2.85 3.6-4.96 6.73-4.96z"/>
-            </svg>
-            Sign in with Google
-        </button>
-
-        <p id="errorMsg" class="text-red-500 mt-4 text-sm hidden font-semibold"></p>
+    <div id="login-section" class="login-box">
+        <p>Please sign in with the authorized admin account to view orders.</p>
+        <button id="login-btn">Sign in with Google</button>
     </div>
 
-    <!-- Admin Dashboard Section -->
-    <div id="dashboardSection" class="hidden max-w-7xl mx-auto p-6 w-full">
-        <div class="flex justify-between items-center mb-6 bg-white p-4 rounded-lg shadow">
-            <h1 class="text-2xl font-bold text-gray-800">JustKharido - Order Management</h1>
-            <div class="flex gap-3">
-                <button id="addTestOrderBtn" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm font-medium">+ Add Test Order</button>
-                <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition text-sm font-medium">Logout</button>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow overflow-hidden">
-            <div class="p-4 border-b bg-gray-50 font-semibold text-gray-700">All Devices Order History</div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-gray-200 text-gray-700 text-sm">
-                            <th class="p-3">Order ID</th>
-                            <th class="p-3">Customer / Device Info</th>
-                            <th class="p-3">Products</th>
-                            <th class="p-3">Total Amount</th>
-                            <th class="p-3">Status</th>
-                            <th class="p-3">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="ordersTableBody" class="text-sm">
-                        <tr><td colspan="6" class="p-4 text-center text-gray-500">Orders load ho rahe hain...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <!-- Unauthorized Section -->
+    <div id="unauthorized-section" style="display: none;">
+        <p class="unauthorized">Access Denied! Only saurav586kumar@gmail.com is allowed to view this page.</p>
+        <button id="logout-btn" style="background-color: #d9534f;">Sign Out</button>
     </div>
 
-    <!-- Firebase SDK & Logic -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getDatabase, ref, get, update, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    <!-- Admin Panel Content (Orders List) -->
+    <div id="admin-content">
+        <h3>Live Orders</h3>
+        <button id="signout-btn" style="background-color: #d9534f; float: right; margin-bottom: 15px;">Logout</button>
+        <div style="clear: both;"></div>
+        <div id="orders-container">Loading orders...</div>
+    </div>
+</div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBkSkf7-O3eR8LLAB9eqXqvScuYXkbqSAo",
-            authDomain: "justkharido-c3d90.firebaseapp.com",
-            databaseURL: "https://justkharido-c3d90-default-rtdb.firebaseio.com",
-            projectId: "justkharido-c3d90",
-            storageBucket: "justkharido-c3d90.firebasestorage.app",
-            messagingSenderId: "307864405555",
-            appId: "1:307864405555:web:11cfa26ad36eb4be054546",
-            measurementId: "G-9JL04WQ6G2"
-        };
+<!-- Firebase Scripts (Modular Version) -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getDatabase(app);
+    // Aapki exact Firebase Configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyBkSkf7-O3eR8LLAB9eqXqvScuYXkbqSAo",
+        authDomain: "justkharido-c3d90.firebaseapp.com",
+        databaseURL: "https://justkharido-c3d90-default-rtdb.firebaseio.com",
+        projectId: "justkharido-c3d90",
+        storageBucket: "justkharido-c3d90.firebasestorage.app",
+        messagingSenderId: "307864405555",
+        appId: "1:307864405555:web:11cfa26ad36eb4be054546",
+        measurementId: "G-9JL04WQ6G2"
+    };
 
-        const ADMIN_EMAIL = "saurav586kumar@gmail.com"; 
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
 
-        const loginSection = document.getElementById('loginSection');
-        const dashboardSection = document.getElementById('dashboardSection');
-        const errorMsg = document.getElementById('errorMsg');
-        const googleLoginBtn = document.getElementById('googleLoginBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const addTestOrderBtn = document.getElementById('addTestOrderBtn');
-        const ordersTableBody = document.getElementById('ordersTableBody');
+    const allowedEmail = "saurav586kumar@gmail.com";
 
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                if (user.email === ADMIN_EMAIL) {
-                    loginSection.classList.add('hidden');
-                    dashboardSection.classList.remove('hidden');
-                    fetchOrders();
-                } else {
-                    await signOut(auth);
-                    loginSection.classList.remove('hidden');
-                    dashboardSection.classList.add('hidden');
-                    errorMsg.innerText = "Access Denied: Yeh account authorized admin nahi hai!";
-                    errorMsg.classList.remove('hidden');
-                }
+    const loginSection = document.getElementById('login-section');
+    const unauthorizedSection = document.getElementById('unauthorized-section');
+    const adminContent = document.getElementById('admin-content');
+    const loginBtn = document.getElementById('login-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    const signoutBtn = document.getElementById('signout-btn');
+    const ordersContainer = document.getElementById('orders-container');
+
+    // Google Login Trigger
+    loginBtn.addEventListener('click', async () => {
+        try {
+            await signInWithPopup(auth, provider);
+        } catch (error) {
+            console.error("Login Error:", error);
+        }
+    });
+
+    // Logout Functionality
+    const handleLogout = () => {
+        signOut(auth).then(() => {
+            window.location.reload();
+        });
+    };
+    logoutBtn.addEventListener('click', handleLogout);
+    signoutBtn.addEventListener('click', handleLogout);
+
+    // Check Authentication State & Email
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            if (user.email === allowedEmail) {
+                // Authorized User
+                loginSection.style.display = 'none';
+                unauthorizedSection.style.display = 'none';
+                adminContent.style.display = 'block';
+                fetchOrders();
             } else {
-                loginSection.classList.remove('hidden');
-                dashboardSection.classList.add('hidden');
+                // Logged in, but wrong email
+                loginSection.style.display = 'none';
+                adminContent.style.display = 'none';
+                unauthorizedSection.style.display = 'block';
             }
-        });
+        } else {
+            // Not logged in
+            loginSection.style.display = 'block';
+            unauthorizedSection.style.display = 'none';
+            adminContent.style.display = 'none';
+        }
+    });
 
-        googleLoginBtn.addEventListener('click', async () => {
-            const provider = new GoogleAuthProvider();
-            try {
-                errorMsg.classList.add('hidden');
-                await signInWithPopup(auth, provider);
-            } catch (error) {
-                console.error("Login Error:", error);
-                errorMsg.innerText = "Google Login Failed: " + error.message;
-                errorMsg.classList.remove('hidden');
+    // Fetch Orders from Firestore
+    async function fetchOrders() {
+        try {
+            const querySnapshot = await getDocs(collection(db, "orders"));
+            ordersContainer.innerHTML = "";
+
+            if (querySnapshot.empty) {
+                ordersContainer.innerHTML = "<p>No orders found yet.</p>";
+                return;
             }
-        });
 
-        logoutBtn.addEventListener('click', async () => {
-            await signOut(auth);
-        });
-
-        // Test Order Add karne ka button
-        addTestOrderBtn.addEventListener('click', async () => {
-            try {
-                const ordersRef = ref(db, 'orders');
-                await push(ordersRef, {
-                    customerName: "Saurav Kumar (Test)",
-                    itemsSummary: "Sample Product - 1",
-                    totalAmount: 999,
-                    status: "Pending"
-                });
-                alert("Test Order Successfully Add Ho Gaya!");
-                fetchOrders();
-            } catch (e) {
-                alert("Error: " + e.message);
-            }
-        });
-
-        async function fetchOrders() {
-            try {
-                const ordersRef = ref(db, 'orders');
-                const snapshot = await get(ordersRef);
+            querySnapshot.forEach((doc) => {
+                const order = doc.data();
                 
-                ordersTableBody.innerHTML = "";
-                if (!snapshot.exists()) {
-                    ordersTableBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Koi order nahi mila. Upar '+ Add Test Order' dabayein.</td></tr>`;
-                    return;
+                let itemsHtml = "";
+                if(order.items && Array.isArray(order.items)) {
+                    order.items.forEach(item => {
+                        itemsHtml += `<li>${item.name} - Qty: ${item.qty} - ₹${item.price}</li>`;
+                    });
                 }
 
-                const ordersData = snapshot.val();
-                Object.keys(ordersData).forEach((orderId) => {
-                    const order = ordersData[orderId];
-                    let statusBadge = order.status === 'Dispatched' 
-                        ? `<span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-semibold">Dispatched</span>`
-                        : `<span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs font-semibold">Pending</span>`;
-
-                    ordersTableBody.innerHTML += `
-                        <tr class="border-t hover:bg-gray-50">
-                            <td class="p-3 font-medium">#${orderId.slice(-6)}</td>
-                            <td class="p-3 text-gray-600">${order.customerName || 'N/A'}</td>
-                            <td class="p-3 text-gray-700">${order.itemsSummary || 'Products'}</td>
-                            <td class="p-3 font-semibold">₹${order.totalAmount || 0}</td>
-                            <td class="p-3">${statusBadge}</td>
-                            <td class="p-3">
-                                <button onclick="dispatchOrder('${orderId}')" class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs hover:bg-blue-700">Dispatch</button>
-                            </td>
-                        </tr>
-                    `;
-                });
-            } catch (e) {
-                console.error("Fetch Error:", e);
-            }
+                const orderDiv = document.createElement('div');
+                orderDiv.className = 'order-card';
+                orderDiv.innerHTML = `
+                    <p><strong>Order ID:</strong> ${doc.id}</p>
+                    <p><strong>Customer Name:</strong> ${order.customerName || 'N/A'}</p>
+                    <p><strong>Phone:</strong> ${order.customerPhone || 'N/A'}</p>
+                    <p><strong>Address:</strong> ${order.address || 'N/A'}</p>
+                    <p><strong>Date:</strong> ${order.date || order.createdAt || 'N/A'}</p>
+                    <p><strong>Items:</strong></p>
+                    <ul>${itemsHtml}</ul>
+                `;
+                ordersContainer.appendChild(orderDiv);
+            });
+        } catch (error) {
+            console.error("Error fetching orders:", error);
+            ordersContainer.innerHTML = "<p>Error loading orders.</p>";
         }
+    }
+</script>
 
-        window.dispatchOrder = async function(orderId) {
-            try {
-                const orderRef = ref(db, 'orders/' + orderId);
-                await update(orderRef, { status: "Dispatched" });
-                alert("Order Dispatched!");
-                fetchOrders();
-            } catch (error) {
-                alert("Update failed.");
-            }
-        }
-    </script>
 </body>
 </html>
