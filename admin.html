@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JustKharido - Admin Panel (Google Login)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+
+    <!-- Login Section -->
+    <div id="loginSection" class="bg-white p-8 rounded-lg shadow-lg max-w-md w-full text-center">
+        <h1 class="text-2xl font-bold mb-2">JustKharido <span class="text-red-500">Admin</span></h1>
+        <p class="text-gray-600 mb-6 text-sm">Please sign in with your authorized Google Account</p>
+        
+        <!-- Google Login Button -->
+        <button id="googleLoginBtn" class="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 text-gray-700 py-2.5 px-4 rounded-lg hover:bg-gray-50 transition font-medium shadow-sm">
+            <svg class="w-5 h-5" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
+                <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.18v3.15C3.17 21.32 7.23 24 12 24z"/>
+                <path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.61H1.18C.43 8.13 0 9.87 0 11.7s.43 3.57 1.18 5.09l4.09-2.55z"/>
+                <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.23 0 3.17 2.68 1.18 6.61l4.09 2.55c.95-2.85 3.6-4.96 6.73-4.96z"/>
+            </svg>
+            Sign in with Google
+        </button>
+
+        <p id="errorMsg" class="text-red-500 mt-4 text-sm hidden font-semibold"></p>
+    </div>
+
+    <!-- Admin Dashboard Section -->
+    <div id="dashboardSection" class="hidden max-w-7xl mx-auto p-6 w-full">
+        <div class="flex justify-between items-center mb-6 bg-white p-4 rounded-lg shadow">
+            <h1 class="text-2xl font-bold text-gray-800">JustKharido - Order Management</h1>
+            <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition text-sm font-medium">Logout</button>
+        </div>
+
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+            <div class="p-4 border-b bg-gray-50 font-semibold text-gray-700">All Devices Order History</div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-200 text-gray-700 text-sm">
+                            <th class="p-3">Order ID</th>
+                            <th class="p-3">Customer / Device Info</th>
+                            <th class="p-3">Products</th>
+                            <th class="p-3">Total Amount</th>
+                            <th class="p-3">Status</th>
+                            <th class="p-3">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody" class="text-sm">
+                        <tr><td colspan="6" class="p-4 text-center text-gray-500">Orders load ho rahe hain...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK & Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBkSkf7-O3eR8LLAB9eqXqvScuYXkbqSAo",
+            authDomain: "justkharido-c3d90.firebaseapp.com",
+            projectId: "justkharido-c3d90",
+            storageBucket: "justkharido-c3d90.firebasestorage.app",
+            messagingSenderId: "307864405555",
+            appId: "1:307864405555:web:11cfa26ad36eb4be054546",
+            measurementId: "G-9JL04WQ6G2"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Yahan aap apni admin email ID daal sakte hain jisse aap login karna chahte hain
+        const ADMIN_EMAIL = ""; // Agar koi bhi Google account allow karna hai tohneeche check hata sakte hain
+
+        const loginSection = document.getElementById('loginSection');
+        const dashboardSection = document.getElementById('dashboardSection');
+        const errorMsg = document.getElementById('errorMsg');
+        const googleLoginBtn = document.getElementById('googleLoginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const ordersTableBody = document.getElementById('ordersTableBody');
+
+        // Check Auth State
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // Agar aapko specific email check karni hai toh ye condition laga sakte hain:
+                // if (ADMIN_EMAIL && user.email !== ADMIN_EMAIL) { ... }
+                
+                loginSection.classList.add('hidden');
+                dashboardSection.classList.remove('hidden');
+                fetchOrders();
+            } else {
+                loginSection.classList.remove('hidden');
+                dashboardSection.classList.add('hidden');
+            }
+        });
+
+        // Google Sign In Click
+        googleLoginBtn.addEventListener('click', async () => {
+            const provider = new GoogleAuthProvider();
+            try {
+                errorMsg.classList.add('hidden');
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                console.error("Login Error:", error);
+                errorMsg.innerText = "Google Login Failed: " + error.message;
+                errorMsg.classList.remove('hidden');
+            }
+        });
+
+        // Logout
+        logoutBtn.addEventListener('click', async () => {
+            await signOut(auth);
+        });
+
+        // Fetch Orders Function
+        async function fetchOrders() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "orders"));
+                ordersTableBody.innerHTML = "";
+                if (querySnapshot.empty) {
+                    ordersTableBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Koi order nahi mila.</td></tr>`;
+                    return;
+                }
+                querySnapshot.forEach((document) => {
+                    const order = document.data();
+                    const orderId = document.id;
+                    let statusBadge = order.status === 'Dispatched' 
+                        ? `<span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-semibold">Dispatched</span>`
+                        : `<span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs font-semibold">Pending</span>`;
+
+                    ordersTableBody.innerHTML += `
+                        <tr class="border-t hover:bg-gray-50">
+                            <td class="p-3 font-medium">#${orderId.slice(-6)}</td>
+                            <td class="p-3 text-gray-600">${order.customerName || 'N/A'}</td>
+                            <td class="p-3 text-gray-700">${order.itemsSummary || 'Products'}</td>
+                            <td class="p-3 font-semibold">₹${order.totalAmount || 0}</td>
+                            <td class="p-3">${statusBadge}</td>
+                            <td class="p-3">
+                                <button onclick="dispatchOrder('${orderId}')" class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs hover:bg-blue-700">Dispatch</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        window.dispatchOrder = async function(orderId) {
+            try {
+                await updateDoc(doc(db, "orders", orderId), { status: "Dispatched" });
+                alert("Order Dispatched!");
+                fetchOrders();
+            } catch (error) {
+                alert("Update failed.");
+            }
+        }
+    </script>
+</body>
+</html>
