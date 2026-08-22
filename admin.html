@@ -3,195 +3,233 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JustKharido - Admin Panel</title>
+    <title>ADMIN PLUG ⚡ JUSTKHARIDO</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f7f6;
-            margin: 0;
-            padding: 20px;
+        :root {
+            --bg: #050505;
+            --card-bg: #0e0e11;
+            --pink: #ff0055;
+            --cyan: #00ffff;
+            --yellow: #f4ee00;
+            --purple: #b000ff;
+            --white: #ffffff;
+            --gray: #141418;
         }
-        .container {
-            max-width: 900px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        h2 { text-align: center; color: #333; }
-        .login-box {
-            text-align: center;
-            padding: 50px;
-        }
-        button {
-            background-color: #4285F4;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            font-size: 16px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover { background-color: #357ae8; }
-        .order-card {
-            background: #fafafa;
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 6px;
-        }
-        .order-card p { margin: 5px 0; }
-        .unauthorized {
-            color: red;
-            text-align: center;
-            font-weight: bold;
-            font-size: 18px;
-        }
-        #admin-content { display: none; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Courier New', Courier, monospace; }
+        body { background: var(--bg); color: var(--white); padding: 2rem; }
+        h1, h2 { text-transform: uppercase; margin-bottom: 1.5rem; text-shadow: 3px 3px var(--pink); }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .admin-section { background: var(--card-bg); border: 4px solid var(--cyan); border-radius: 30px; padding: 2rem; margin-bottom: 2.5rem; box-shadow: 8px 8px 0px var(--purple); }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+        label { display: block; font-size: 0.85rem; color: var(--yellow); font-weight: bold; margin-bottom: 4px; }
+        input, select, textarea { width: 100%; padding: 12px; background: var(--gray); border: 2px solid var(--purple); color: white; border-radius: 12px; font-size: 0.95rem; }
+        input[type="file"] { padding: 8px; cursor: pointer; }
+        button { background: var(--yellow); color: #000; border: 3px solid #000; padding: 12px 20px; font-weight: 900; cursor: pointer; border-radius: 20px; box-shadow: 4px 4px 0px var(--pink); transition: 0.2s; }
+        button:hover { background: var(--cyan); transform: translateY(-2px); }
+        .item-row { display: flex; justify-content: space-between; align-items: center; background: var(--gray); padding: 12px 18px; border-radius: 15px; border: 2px solid var(--pink); margin-bottom: 10px; }
+        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--yellow); color: #000; padding: 12px 24px; font-weight: 900; border: 3px solid #000; box-shadow: 5px 5px 0px var(--pink); border-radius: 20px; transition: transform 0.3s; z-index: 1000; }
+        #toast.show { transform: translateX(-50%) translateY(0); }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1>⚡ ADMIN COMMAND CENTER ⚡</h1>
 
-<div class="container">
-    <h2>JustKharido Admin Dashboard</h2>
+        <!-- Add Product Section -->
+        <div class="admin-section">
+            <h2>Add New Drop / Product 🚀</h2>
+            <div class="form-grid">
+                <div>
+                    <label>Product Name</label>
+                    <input type="text" id="pName" placeholder="e.g. Cyber Hoodie V4">
+                </div>
+                <div>
+                    <label>Price (₹)</label>
+                    <input type="number" id="pPrice" placeholder="2999">
+                </div>
+                <div>
+                    <label>Discounted Price (₹) [Optional]</label>
+                    <input type="number" id="pDiscPrice" placeholder="1999">
+                </div>
+                <div>
+                    <label>Product Category / Type</label>
+                    <select id="pType">
+                        <option value="normal">Normal Product</option>
+                        <option value="new_drop">New Drop</option>
+                        <option value="trending">Trending</option>
+                        <option value="banner">Hero/Featured Banner</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Sizing Type</label>
+                    <select id="pSizeType">
+                        <option value="none">No Size Needed (e.g. Shades, Beanie)</option>
+                        <option value="shoes">Shoes Size (6, 7, 8, 9, 10)</option>
+                        <option value="clothing">Clothing Size (S, M, L, XL)</option>
+                        <option value="jeans">Jeans Size (28, 30, 32, 34)</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Main Image (Upload from Gallery)</label>
+                    <input type="file" id="pImgFile" accept="image/*">
+                </div>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label>Extra Images (Upload Multiple from Gallery)</label>
+                <input type="file" id="pExtraImgFiles" accept="image/*" multiple>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label>Product Description</label>
+                <textarea id="pDesc" rows="3" placeholder="Heavyweight fleece fabric, reflective print..."></textarea>
+            </div>
+            <button onclick="addNewProduct()">PUBLISH PRODUCT ⚡</button>
+        </div>
 
-    <!-- Login Section -->
-    <div id="login-section" class="login-box">
-        <p>Please sign in with the authorized admin account to view orders.</p>
-        <button id="login-btn">Sign in with Google</button>
+        <!-- Manage Products Section -->
+        <div class="admin-section">
+            <h2>Manage / Remove Products 🗑️</h2>
+            <div id="adminProductList"></div>
+        </div>
+
+        <!-- Manage Orders Section -->
+        <div class="admin-section">
+            <h2>Customer Orders & Status 📦</h2>
+            <div id="adminOrdersList"></div>
+        </div>
     </div>
 
-    <!-- Unauthorized Section -->
-    <div id="unauthorized-section" style="display: none;">
-        <p class="unauthorized">Access Denied! Only saurav586kumar@gmail.com is allowed to view this page.</p>
-        <button id="logout-btn" style="background-color: #d9534f;">Sign Out</button>
-    </div>
+    <div id="toast">Action Successful!</div>
 
-    <!-- Admin Panel Content (Orders List) -->
-    <div id="admin-content">
-        <h3>Live Orders</h3>
-        <button id="signout-btn" style="background-color: #d9534f; float: right; margin-bottom: 15px;">Logout</button>
-        <div style="clear: both;"></div>
-        <div id="orders-container">Loading orders...</div>
-    </div>
-</div>
-
-<!-- Firebase Scripts (Modular Version) -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
-
-    // Aapki exact Firebase Configuration
-    const firebaseConfig = {
-        apiKey: "AIzaSyBkSkf7-O3eR8LLAB9eqXqvScuYXkbqSAo",
-        authDomain: "justkharido-c3d90.firebaseapp.com",
-        databaseURL: "https://justkharido-c3d90-default-rtdb.firebaseio.com",
-        projectId: "justkharido-c3d90",
-        storageBucket: "justkharido-c3d90.firebasestorage.app",
-        messagingSenderId: "307864405555",
-        appId: "1:307864405555:web:11cfa26ad36eb4be054546",
-        measurementId: "G-9JL04WQ6G2"
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const provider = new GoogleAuthProvider();
-
-    const allowedEmail = "saurav586kumar@gmail.com";
-
-    const loginSection = document.getElementById('login-section');
-    const unauthorizedSection = document.getElementById('unauthorized-section');
-    const adminContent = document.getElementById('admin-content');
-    const loginBtn = document.getElementById('login-btn');
-    const logoutBtn = document.getElementById('logout-btn');
-    const signoutBtn = document.getElementById('signout-btn');
-    const ordersContainer = document.getElementById('orders-container');
-
-    // Google Login Trigger
-    loginBtn.addEventListener('click', async () => {
-        try {
-            await signInWithPopup(auth, provider);
-        } catch (error) {
-            console.error("Login Error:", error);
+    <script>
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2500);
         }
-    });
 
-    // Logout Functionality
-    const handleLogout = () => {
-        signOut(auth).then(() => {
-            window.location.reload();
-        });
-    };
-    logoutBtn.addEventListener('click', handleLogout);
-    signoutBtn.addEventListener('click', handleLogout);
+        let products = JSON.parse(localStorage.getItem('jk_products')) || [];
+        let orders = JSON.parse(localStorage.getItem('jk_all_orders')) || [];
 
-    // Check Authentication State & Email
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            if (user.email === allowedEmail) {
-                // Authorized User
-                loginSection.style.display = 'none';
-                unauthorizedSection.style.display = 'none';
-                adminContent.style.display = 'block';
-                fetchOrders();
-            } else {
-                // Logged in, but wrong email
-                loginSection.style.display = 'none';
-                adminContent.style.display = 'none';
-                unauthorizedSection.style.display = 'block';
+        function renderAdminProducts() {
+            const container = document.getElementById('adminProductList');
+            if(products.length === 0) {
+                container.innerHTML = `<p style="color:#888;">No products listed yet.</p>`;
+                return;
             }
-        } else {
-            // Not logged in
-            loginSection.style.display = 'block';
-            unauthorizedSection.style.display = 'none';
-            adminContent.style.display = 'none';
+            container.innerHTML = products.map(p => `
+                <div class="item-row">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <img src="${p.image}" style="width:40px; height:40px; object-fit:cover; border-radius:8px;">
+                        <div><strong>${p.name}</strong> - ₹${p.price} <span style="color:var(--cyan);">[${p.type}]</span></div>
+                    </div>
+                    <button onclick="deleteProduct(${p.id})" style="background:var(--pink); color:#fff; padding:6px 12px; font-size:0.8rem;">DELETE ✕</button>
+                </div>
+            `).join('');
         }
-    });
 
-    // Fetch Orders from Firestore
-    async function fetchOrders() {
-        try {
-            const querySnapshot = await getDocs(collection(db, "orders"));
-            ordersContainer.innerHTML = "";
+        // Helper function to convert uploaded file to Base64 string
+        function convertFileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+                reader.readAsDataURL(file);
+            });
+        }
 
-            if (querySnapshot.empty) {
-                ordersContainer.innerHTML = "<p>No orders found yet.</p>";
+        async function addNewProduct() {
+            const name = document.getElementById('pName').value;
+            const price = parseFloat(document.getElementById('pPrice').value);
+            const discPrice = parseFloat(document.getElementById('pDiscPrice').value) || 0;
+            const type = document.getElementById('pType').value;
+            const sizeType = document.getElementById('pSizeType').value;
+            const desc = document.getElementById('pDesc').value;
+            
+            const mainImgFile = document.getElementById('pImgFile').files[0];
+            const extraImgFiles = document.getElementById('pExtraImgFiles').files;
+
+            if(!name || !price || !mainImgFile) {
+                showToast("Please fill Name, Price & Main Image! 😅");
                 return;
             }
 
-            querySnapshot.forEach((doc) => {
-                const order = doc.data();
-                
-                let itemsHtml = "";
-                if(order.items && Array.isArray(order.items)) {
-                    order.items.forEach(item => {
-                        itemsHtml += `<li>${item.name} - Qty: ${item.qty} - ₹${item.price}</li>`;
-                    });
+            try {
+                // Convert Main Image
+                const mainImageBase64 = await convertFileToBase64(mainImgFile);
+
+                // Convert Extra Images
+                let extraImagesBase64 = [];
+                for(let i = 0; i < extraImgFiles.length; i++) {
+                    const b64 = await convertFileToBase64(extraImgFiles[i]);
+                    extraImagesBase64.push(b64);
                 }
 
-                const orderDiv = document.createElement('div');
-                orderDiv.className = 'order-card';
-                orderDiv.innerHTML = `
-                    <p><strong>Order ID:</strong> ${doc.id}</p>
-                    <p><strong>Customer Name:</strong> ${order.customerName || 'N/A'}</p>
-                    <p><strong>Phone:</strong> ${order.customerPhone || 'N/A'}</p>
-                    <p><strong>Address:</strong> ${order.address || 'N/A'}</p>
-                    <p><strong>Date:</strong> ${order.date || order.createdAt || 'N/A'}</p>
-                    <p><strong>Items:</strong></p>
-                    <ul>${itemsHtml}</ul>
-                `;
-                ordersContainer.appendChild(orderDiv);
-            });
-        } catch (error) {
-            console.error("Error fetching orders:", error);
-            ordersContainer.innerHTML = "<p>Error loading orders.</p>";
-        }
-    }
-</script>
+                const newProd = {
+                    id: Date.now(),
+                    name, price, discPrice, type, sizeType, 
+                    image: mainImageBase64, 
+                    extraImgs: extraImagesBase64, 
+                    desc,
+                    reviews: []
+                };
 
+                products.unshift(newProd);
+                localStorage.setItem('jk_products', JSON.stringify(products));
+                renderAdminProducts();
+                showToast("Product Published Successfully! 🚀");
+
+                // Reset Inputs
+                document.getElementById('pName').value = '';
+                document.getElementById('pPrice').value = '';
+                document.getElementById('pDiscPrice').value = '';
+                document.getElementById('pImgFile').value = '';
+                document.getElementById('pExtraImgFiles').value = '';
+                document.getElementById('pDesc').value = '';
+            } catch(err) {
+                showToast("Error processing images! ❌");
+            }
+        }
+
+        window.deleteProduct = function(id) {
+            products = products.filter(p => p.id !== id);
+            localStorage.setItem('jk_products', JSON.stringify(products));
+            renderAdminProducts();
+            showToast("Product Removed!");
+        }
+
+        function renderAdminOrders() {
+            const container = document.getElementById('adminOrdersList');
+            if(orders.length === 0) {
+                container.innerHTML = `<p style="color:#888;">No orders received yet.</p>`;
+                return;
+            }
+            container.innerHTML = orders.map((o, idx) => `
+                <div class="item-row" style="flex-direction:column; align-items:flex-start; gap:8px;">
+                    <div><strong>Order #${o.orderId}</strong> | User: ${o.customerName} (${o.customerPhone})</div>
+                    <div style="font-size:0.85rem; color:#ccc;">Items: ${o.itemsCount} pcs | Total: ₹${o.total}</div>
+                    <div style="font-size:0.85rem; color:var(--yellow);">Address: ${o.address}</div>
+                    <div style="display:flex; gap:10px; width:100%; margin-top:6px; align-items:center;">
+                        <span style="font-size:0.85rem;">Status: <strong>${o.status}</strong></span>
+                        <select onchange="updateOrderStatus(${idx}, this.value)" style="padding:6px; width:auto;">
+                            <option value="Processing" ${o.status==='Processing'?'selected':''}>Processing</option>
+                            <option value="Dispatched 🚚" ${o.status==='Dispatched 🚚'?'selected':''}>Dispatched 🚚</option>
+                            <option value="Delivered ✅" ${o.status==='Delivered ✅'?'selected':''}>Delivered ✅</option>
+                        </select>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.updateOrderStatus = function(index, newStatus) {
+            orders[index].status = newStatus;
+            localStorage.setItem('jk_all_orders', JSON.stringify(orders));
+            showToast(`Status updated to: ${newStatus}`);
+            renderAdminOrders();
+        }
+
+        renderAdminProducts();
+        renderAdminOrders();
+    </script>
 </body>
 </html>
