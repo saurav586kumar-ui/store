@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADMIN PLUG ⚡ JUSTKHARIDO</title>
+    <title>SECURE ADMIN PLUG ⚡ JUSTKHARIDO</title>
     <style>
         :root {
             --bg: #050505;
@@ -19,6 +19,10 @@
         body { background: var(--bg); color: var(--white); padding: 2rem; }
         h1, h2 { text-transform: uppercase; margin-bottom: 1.5rem; text-shadow: 3px 3px var(--pink); }
         .container { max-width: 1200px; margin: 0 auto; }
+        
+        #authScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); display: flex; justify-content: center; align-items: center; z-index: 9999; }
+        .auth-card { background: var(--card-bg); border: 4px solid var(--pink); padding: 2.5rem; border-radius: 30px; box-shadow: 8px 8px 0px var(--cyan); width: 100%; max-width: 400px; text-align: center; }
+
         .admin-section { background: var(--card-bg); border: 4px solid var(--cyan); border-radius: 30px; padding: 2rem; margin-bottom: 2.5rem; box-shadow: 8px 8px 0px var(--purple); }
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
         label { display: block; font-size: 0.85rem; color: var(--yellow); font-weight: bold; margin-bottom: 4px; }
@@ -30,12 +34,64 @@
         #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--yellow); color: #000; padding: 12px 24px; font-weight: 900; border: 3px solid #000; box-shadow: 5px 5px 0px var(--pink); border-radius: 20px; transition: transform 0.3s; z-index: 1000; }
         #toast.show { transform: translateX(-50%) translateY(0); }
     </style>
+
+    <!-- Firebase SDKs (Auth + Realtime Database) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getDatabase, ref, set, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBkSkf7-O3eR8LLAB9eqXqvScuYXkbqSAo",
+            authDomain: "justkharido-c3d90.firebaseapp.com",
+            databaseURL: "https://justkharido-c3d90-default-rtdb.firebaseio.com",
+            projectId: "justkharido-c3d90",
+            storageBucket: "justkharido-c3d90.firebasestorage.app",
+            messagingSenderId: "307864405555",
+            appId: "1:307864405555:web:11cfa26ad36eb4be054546",
+            measurementId: "G-9JL04WQ6G2"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        window.auth = auth;
+        window.googleProvider = new GoogleAuthProvider();
+        window.signInWithPopup = signInWithPopup;
+        window.signOut = signOut;
+        window.onAuthStateChanged = onAuthStateChanged;
+
+        window.db = db;
+        window.ref = ref;
+        window.set = set;
+        window.push = push;
+        window.onValue = onValue;
+        window.remove = remove;
+        window.update = update;
+        
+        window.dispatchEvent(new Event('firebaseLoaded'));
+    </script>
 </head>
 <body>
-    <div class="container">
-        <h1>⚡ ADMIN COMMAND CENTER ⚡</h1>
 
-        <!-- Add Product Section -->
+    <div id="authScreen">
+        <div class="auth-card">
+            <h2>RESTRICTED AREA 🛑</h2>
+            <p style="color:#aaa; font-size:0.85rem; margin-bottom:1.5rem;">Authenticate with authorized Google account:</p>
+            <button onclick="loginWithGoogle()" style="width:100%; background:var(--white); color:#000; display:flex; align-items:center; justify-content:center; gap:10px;">
+                <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.19v3.15C3.17 21.36 7.23 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.6H1.19C.43 8.13 0 9.89 0 11.75s.43 3.62 1.19 5.15l4.08-2.66z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.23 0 3.17 2.64 1.19 6.6l4.08 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
+                SIGN IN WITH GOOGLE ⚡
+            </button>
+        </div>
+    </div>
+
+    <div class="container" id="adminDashboard" style="display:none;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>⚡ ADMIN COMMAND CENTER ⚡</h1>
+            <button onclick="logoutAdmin()" style="background:var(--pink); color:#fff; padding:8px 14px; font-size:0.8rem;">LOCK OUT 🔒</button>
+        </div>
+
         <div class="admin-section">
             <h2>Add New Drop / Product 🚀</h2>
             <div class="form-grid">
@@ -85,15 +141,13 @@
             <button onclick="addNewProduct()">PUBLISH PRODUCT ⚡</button>
         </div>
 
-        <!-- Manage Products Section -->
         <div class="admin-section">
             <h2>Manage / Remove Products 🗑️</h2>
             <div id="adminProductList"></div>
         </div>
 
-        <!-- Manage Orders Section -->
         <div class="admin-section">
-            <h2>Customer Orders & Status 📦</h2>
+            <h2>All Customers Orders & Command Dispatch 📦</h2>
             <div id="adminOrdersList"></div>
         </div>
     </div>
@@ -101,6 +155,45 @@
     <div id="toast">Action Successful!</div>
 
     <script>
+        const MASTER_ADMIN = "saurav586kumar@gmail.com";
+
+        window.addEventListener('firebaseLoaded', () => {
+            window.onAuthStateChanged(window.auth, (user) => {
+                if (user && user.email === MASTER_ADMIN) {
+                    document.getElementById('authScreen').style.display = 'none';
+                    document.getElementById('adminDashboard').style.display = 'block';
+                    initAdminData();
+                } else {
+                    if (user) {
+                        // Agar koi aur email se login kiya toh turant sign out kar do
+                        window.signOut(window.auth);
+                        showToast("Access Denied! Only Saurav is allowed ❌");
+                    }
+                    document.getElementById('authScreen').style.display = 'flex';
+                    document.getElementById('adminDashboard').style.display = 'none';
+                }
+            });
+        });
+
+        async function loginWithGoogle() {
+            try {
+                const result = await window.signInWithPopup(window.auth, window.googleProvider);
+                const user = result.user;
+                if (user.email !== MASTER_ADMIN) {
+                    await window.signOut(window.auth);
+                    showToast("Unauthorized Account! Access Blocked 🚫");
+                }
+            } catch (error) {
+                showToast("Google Sign-In Failed! ❌");
+            }
+        }
+
+        function logoutAdmin() {
+            window.signOut(window.auth).then(() => {
+                showToast("Logged out securely 🔒");
+            });
+        }
+
         function showToast(msg) {
             const t = document.getElementById('toast');
             t.innerText = msg;
@@ -108,10 +201,29 @@
             setTimeout(() => t.classList.remove('show'), 2500);
         }
 
-        let products = JSON.parse(localStorage.getItem('jk_products')) || [];
-        let orders = JSON.parse(localStorage.getItem('jk_all_orders')) || [];
+        function initAdminData() {
+            const productsRef = window.ref(window.db, 'products');
+            window.onValue(productsRef, (snapshot) => {
+                const data = snapshot.val();
+                let products = [];
+                if(data) {
+                    products = Object.keys(data).map(key => ({ firebaseKey: key, ...data[key] }));
+                }
+                renderAdminProducts(products);
+            });
 
-        function renderAdminProducts() {
+            const ordersRef = window.ref(window.db, 'orders');
+            window.onValue(ordersRef, (snapshot) => {
+                const data = snapshot.val();
+                let orders = [];
+                if(data) {
+                    orders = Object.keys(data).map(key => ({ firebaseKey: key, ...data[key] }));
+                }
+                renderAdminOrders(orders);
+            });
+        }
+
+        function renderAdminProducts(products) {
             const container = document.getElementById('adminProductList');
             if(products.length === 0) {
                 container.innerHTML = `<p style="color:#888;">No products listed yet.</p>`;
@@ -120,15 +232,14 @@
             container.innerHTML = products.map(p => `
                 <div class="item-row">
                     <div style="display:flex; align-items:center; gap:10px;">
-                        <img src="${p.image}" style="width:40px; height:40px; object-fit:cover; border-radius:8px;">
+                        <img src="${p.image}" style="width:45px; height:45px; object-fit:cover; border-radius:8px;">
                         <div><strong>${p.name}</strong> - ₹${p.price} <span style="color:var(--cyan);">[${p.type}]</span></div>
                     </div>
-                    <button onclick="deleteProduct(${p.id})" style="background:var(--pink); color:#fff; padding:6px 12px; font-size:0.8rem;">DELETE ✕</button>
+                    <button onclick="deleteProduct('${p.firebaseKey}')" style="background:var(--pink); color:#fff; padding:6px 12px; font-size:0.8rem;">DELETE ✕</button>
                 </div>
             `).join('');
         }
 
-        // Helper function to convert uploaded file to Base64 string
         function convertFileToBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -155,10 +266,7 @@
             }
 
             try {
-                // Convert Main Image
                 const mainImageBase64 = await convertFileToBase64(mainImgFile);
-
-                // Convert Extra Images
                 let extraImagesBase64 = [];
                 for(let i = 0; i < extraImgFiles.length; i++) {
                     const b64 = await convertFileToBase64(extraImgFiles[i]);
@@ -174,12 +282,11 @@
                     reviews: []
                 };
 
-                products.unshift(newProd);
-                localStorage.setItem('jk_products', JSON.stringify(products));
-                renderAdminProducts();
+                const newProdRef = window.push(window.ref(window.db, 'products'));
+                await window.set(newProdRef, newProd);
+
                 showToast("Product Published Successfully! 🚀");
 
-                // Reset Inputs
                 document.getElementById('pName').value = '';
                 document.getElementById('pPrice').value = '';
                 document.getElementById('pDiscPrice').value = '';
@@ -191,45 +298,42 @@
             }
         }
 
-        window.deleteProduct = function(id) {
-            products = products.filter(p => p.id !== id);
-            localStorage.setItem('jk_products', JSON.stringify(products));
-            renderAdminProducts();
+        window.deleteProduct = function(firebaseKey) {
+            window.remove(window.ref(window.db, `products/${firebaseKey}`));
             showToast("Product Removed!");
         }
 
-        function renderAdminOrders() {
+        function renderAdminOrders(orders) {
             const container = document.getElementById('adminOrdersList');
             if(orders.length === 0) {
-                container.innerHTML = `<p style="color:#888;">No orders received yet.</p>`;
+                container.innerHTML = `<p style="color:#888;">No customer orders received yet.</p>`;
                 return;
             }
-            container.innerHTML = orders.map((o, idx) => `
+            container.innerHTML = orders.map((o) => `
                 <div class="item-row" style="flex-direction:column; align-items:flex-start; gap:8px;">
-                    <div><strong>Order #${o.orderId}</strong> | User: ${o.customerName} (${o.customerPhone})</div>
-                    <div style="font-size:0.85rem; color:#ccc;">Items: ${o.itemsCount} pcs | Total: ₹${o.total}</div>
-                    <div style="font-size:0.85rem; color:var(--yellow);">Address: ${o.address}</div>
-                    <div style="display:flex; gap:10px; width:100%; margin-top:6px; align-items:center;">
-                        <span style="font-size:0.85rem;">Status: <strong>${o.status}</strong></span>
-                        <select onchange="updateOrderStatus(${idx}, this.value)" style="padding:6px; width:auto;">
-                            <option value="Processing" ${o.status==='Processing'?'selected':''}>Processing</option>
-                            <option value="Dispatched 🚚" ${o.status==='Dispatched 🚚'?'selected':''}>Dispatched 🚚</option>
-                            <option value="Delivered ✅" ${o.status==='Delivered ✅'?'selected':''}>Delivered ✅</option>
+                    <div style="display:flex; justify-content:space-between; width:100%;">
+                        <strong>Order #${o.orderId}</strong>
+                        <span style="color:var(--yellow);">${o.date}</span>
+                    </div>
+                    <div style="font-size:0.9rem; color:var(--cyan);">Customer: ${o.customerName} (${o.customerPhone})</div>
+                    <div style="font-size:0.85rem; color:#ccc;">Items Total: ₹${o.total} (${o.itemsCount} items)</div>
+                    <div style="font-size:0.85rem; color:#aaa;">Delivery Address: <strong>${o.address}</strong></div>
+                    <div style="display:flex; gap:10px; width:100%; margin-top:6px; align-items:center; justify-content:space-between;">
+                        <span style="font-size:0.85rem;">Status Command: <strong>${o.status}</strong></span>
+                        <select onchange="updateOrderStatus('${o.firebaseKey}', this.value)" style="padding:6px; width:auto;">
+                            <option value="Processing 🔄" ${o.status.includes('Processing')?'selected':''}>Processing 🔄</option>
+                            <option value="Dispatched 🚚" ${o.status.includes('Dispatched')?'selected':''}>Dispatched 🚚</option>
+                            <option value="Delivered ✅" ${o.status.includes('Delivered')?'selected':''}>Delivered ✅</option>
                         </select>
                     </div>
                 </div>
             `).join('');
         }
 
-        window.updateOrderStatus = function(index, newStatus) {
-            orders[index].status = newStatus;
-            localStorage.setItem('jk_all_orders', JSON.stringify(orders));
-            showToast(`Status updated to: ${newStatus}`);
-            renderAdminOrders();
+        window.updateOrderStatus = function(firebaseKey, newStatus) {
+            window.update(window.ref(window.db, `orders/${firebaseKey}`), { status: newStatus });
+            showToast(`Command sent: Status -> ${newStatus}`);
         }
-
-        renderAdminProducts();
-        renderAdminOrders();
     </script>
 </body>
 </html>
