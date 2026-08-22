@@ -35,7 +35,7 @@ export const adminLoginWithGoogle = async () => signInWithPopup(auth, provider);
 export const adminLogout = async () => signOut(auth);
 export const listenAuthState = (cb) => onAuthStateChanged(auth, cb);
 
-// Cloudinary Direct Image Upload Function
+// Image Upload
 export const uploadImagesToCloudinary = async (files) => {
   const cloudName = "qrfra7ry"; 
   const uploadPreset = "justkharido_preset";
@@ -61,11 +61,18 @@ export const uploadImagesToCloudinary = async (files) => {
   return Promise.all(uploadPromises);
 };
 
-// Firestore CRUD Operations
+// Real-time Firestore Subscriber with Safe Fallback
 export const subscribeProducts = (cb) => {
-  return onSnapshot(collection(db, "products"), (snapshot) => {
-    cb(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
-  });
+  return onSnapshot(
+    collection(db, "products"), 
+    (snapshot) => {
+      const products = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      cb(products);
+    },
+    (error) => {
+      console.error("Firestore Listen Error:", error);
+    }
+  );
 };
 
 export const addProductToFirebase = async (productData) => addDoc(collection(db, "products"), productData);
