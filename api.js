@@ -31,25 +31,37 @@ export const db = getFirestore(app);
 export const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// Authentication Functions
 export const adminLoginWithGoogle = async () => signInWithPopup(auth, provider);
 export const adminLogout = async () => signOut(auth);
 export const listenAuthState = (cb) => onAuthStateChanged(auth, cb);
 
-// Image Files Ko Fast Base64 Format Mein Convert Karne Ke Liye
-export const convertFilesToBase64 = async (files) => {
-  const promises = Array.from(files).map(file => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
-      reader.readAsDataURL(file);
+// Cloudinary Direct Image Upload Function
+export const uploadImagesToCloudinary = async (files) => {
+  const cloudName = "qrfra7ry"; 
+  const uploadPreset = "justkharido_preset";
+
+  const uploadPromises = Array.from(files).map(async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", uploadPreset);
+
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+      method: "POST",
+      body: formData
     });
+
+    if (!res.ok) {
+      const errData = await res.json();
+      throw new Error(errData.error?.message || "Image upload failed");
+    }
+    const data = await res.json();
+    return data.secure_url;
   });
-  return Promise.all(promises);
+
+  return Promise.all(uploadPromises);
 };
 
-// Firestore Products CRUD Operations
+// Firestore CRUD Operations
 export const subscribeProducts = (cb) => {
   return onSnapshot(collection(db, "products"), (snapshot) => {
     cb(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
@@ -57,15 +69,6 @@ export const subscribeProducts = (cb) => {
 };
 
 export const addProductToFirebase = async (productData) => addDoc(collection(db, "products"), productData);
-
-export const updateProductInFirebase = async (id, updatedData) => {
-  const productRef = doc(db, "products", id);
-  return await updateDoc(productRef, updatedData);
-};
-
-export const toggleStockStatus = async (id, currentStatus) => {
-  const productRef = doc(db, "products", id);
-  return await updateDoc(productRef, { isStock: !currentStatus });
-};
-
-export const deleteProductFromFirebase = async (id) => deleteDoc(doc(db, "products"), id);
+export const updateProductInFirebase = async (id, updatedData) => updateDoc(doc(db, "products", id), updatedData);
+export const toggleStockStatus = async (id, currentStatus) => updateDoc(doc(db, "products", id), { isStock: !currentStatus });
+export const deleteProductFromFirebase = async (id) => deleteDoc(doc(db, "products", id));
