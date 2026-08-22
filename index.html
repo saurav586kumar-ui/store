@@ -3,244 +3,66 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JUSTKHARIDO | Shop Beyond Limits</title>
+  <title>Welcome to JustKharido</title>
   <style>
-    :root {
-      --primary: #ff3e6c;
-      --primary-glow: rgba(255, 62, 108, 0.45);
-      --accent: #00f2fe;
-      --bg-dark: #090d16;
-      --card-bg: rgba(22, 27, 34, 0.75);
-      --text: #f0f6fc;
-      --text-muted: #8b949e;
-      --border: rgba(255, 255, 255, 0.08);
-    }
-
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', system-ui, sans-serif; }
-    body { background-color: var(--bg-dark); color: var(--text); overflow-x: hidden; }
-
-    /* CSS Keyframe Animations */
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes pulseGlow {
-      0% { box-shadow: 0 0 15px var(--primary-glow); }
-      50% { box-shadow: 0 0 35px var(--primary); }
-      100% { box-shadow: 0 0 15px var(--primary-glow); }
-    }
-
-    @keyframes floatImg {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      50% { transform: translateY(-12px) rotate(1deg); }
-    }
-
-    /* Glassmorphism Header */
-    header {
-      background: rgba(9, 13, 22, 0.85);
-      backdrop-filter: blur(12px);
-      padding: 18px 8%;
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body {
+      height: 100vh;
+      background: linear-gradient(-45deg, #ff007f, #7f00ff, #00d4ff, #00ff88);
+      background-size: 400% 400%;
+      animation: gradientBG 10s ease infinite;
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
-      position: fixed;
-      top: 0; width: 100%; z-index: 1000;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .logo {
-      font-size: 26px;
-      font-weight: 900;
-      letter-spacing: 2px;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .nav-links a {
-      color: var(--text);
-      text-decoration: none;
-      margin-left: 24px;
-      font-weight: 600;
-      transition: color 0.3s ease;
-    }
-
-    .nav-links a:hover { color: var(--primary); }
-
-    /* Hero Section */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 130px 8% 60px;
-      gap: 40px;
-    }
-
-    .hero-content { flex: 1; animation: fadeInUp 0.8s ease-out; }
-
-    .hero-badge {
-      background: rgba(255, 62, 108, 0.12);
-      color: var(--primary);
-      padding: 6px 16px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 800;
-      display: inline-block;
-      margin-bottom: 20px;
-      border: 1px solid var(--primary-glow);
-      letter-spacing: 1px;
-    }
-
-    .hero-title {
-      font-size: 56px;
-      font-weight: 900;
-      line-height: 1.1;
-      margin-bottom: 20px;
-      background: linear-gradient(135deg, #ffffff 0%, var(--text-muted) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero-title span {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero-desc {
-      font-size: 18px;
-      color: var(--text-muted);
-      margin-bottom: 35px;
-      max-width: 500px;
-      line-height: 1.6;
-    }
-
-    .cta-btn {
-      display: inline-block;
-      background: var(--primary);
-      color: #fff;
-      padding: 16px 36px;
-      border-radius: 30px;
-      font-weight: 800;
-      font-size: 15px;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      animation: pulseGlow 2.5s infinite;
-    }
-
-    .cta-btn:hover {
-      transform: translateY(-3px) scale(1.02);
-      background: #e0325c;
-    }
-
-    .hero-img-box { flex: 1; display: flex; justify-content: center; }
-
-    .hero-img {
-      width: 100%;
-      max-width: 480px;
-      border-radius: 24px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-      animation: floatImg 4s ease-in-out infinite;
-      border: 1px solid var(--border);
-    }
-
-    /* Categories Showcase */
-    .categories { padding: 80px 8%; background: var(--bg-dark); }
-    .section-title { font-size: 32px; font-weight: 800; text-align: center; margin-bottom: 40px; }
-
-    .cat-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
-    }
-
-    .cat-card {
-      position: relative;
-      border-radius: 16px;
       overflow: hidden;
-      height: 320px;
-      cursor: pointer;
-      border: 1px solid var(--border);
-      transition: transform 0.4s ease;
     }
-
-    .cat-card:hover { transform: translateY(-8px); }
-    .cat-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
-    .cat-card:hover img { transform: scale(1.08); }
-
-    .cat-overlay {
-      position: absolute; inset: 0;
-      background: linear-gradient(to top, rgba(9,13,22,0.95), transparent 70%);
-      display: flex; flex-direction: column; justify-content: flex-end; padding: 24px;
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
-
-    @media (max-width: 900px) {
-      .hero { flex-direction: column; text-align: center; padding-top: 140px; }
-      .hero-title { font-size: 40px; }
-      .hero-desc { margin: 0 auto 30px; }
+    .landing-card {
+      text-align: center;
+      color: white;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      padding: 50px;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-15px); }
+    }
+    .title { font-size: 3.5rem; margin-bottom: 10px; text-shadow: 2px 2px 10px rgba(0,0,0,0.3); }
+    .btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 15px 40px;
+      font-size: 1.2rem;
+      color: #fff;
+      background: #ff007f;
+      border: none;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.4s ease;
+      box-shadow: 0 5px 15px rgba(255, 0, 127, 0.4);
+    }
+    .btn:hover {
+      background: #00d4ff;
+      color: #000;
+      transform: scale(1.1) rotate(2deg);
+      box-shadow: 0 10px 25px rgba(0, 212, 255, 0.6);
     }
   </style>
 </head>
 <body>
-
-  <!-- Navigation Header -->
-  <header>
-    <div class="logo">JUSTKHARIDO</div>
-    <div class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="products.html">Store</a>
-      <a href="cart.html">Cart</a>
-      <a href="order-history.html">Orders</a>
-    </div>
-  </header>
-
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="hero-content">
-      <span class="hero-badge">NEW DROPS 2026</span>
-      <h1 class="hero-title">JUST THINK IT. <span>JUSTKHARIDO.</span></h1>
-      <p class="hero-desc">Discover exclusive fashion collections, high-end streetwear, and premium lifestyle gear with fast delivery.</p>
-      <a href="products.html" class="cta-btn">SHOP NOW →</a>
-    </div>
-
-    <div class="hero-img-box">
-      <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800" alt="JustKharido Fashion" class="hero-img">
-    </div>
-  </section>
-
-  <!-- Featured Categories -->
-  <section class="categories">
-    <h2 class="section-title">TOP CATEGORIES</h2>
-    <div class="cat-grid">
-
-      <div class="cat-card" onclick="window.location.href='products.html'">
-        <img src="https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=600" alt="Streetwear Apparel">
-        <div class="cat-overlay">
-          <div style="font-size:22px; font-weight:800;">Streetwear & Outerwear</div>
-          <div style="font-size:14px; color:var(--primary); font-weight:700; margin-top:4px;">Explore Store →</div>
-        </div>
-      </div>
-
-      <div class="cat-card" onclick="window.location.href='products.html'">
-        <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600" alt="Sneakers Collection">
-        <div class="cat-overlay">
-          <div style="font-size:22px; font-weight:800;">Sneakers & Kicks</div>
-          <div style="font-size:14px; color:var(--primary); font-weight:700; margin-top:4px;">Explore Store →</div>
-        </div>
-      </div>
-
-      <div class="cat-card" onclick="window.location.href='products.html'">
-        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600" alt="Lifestyle Accessories">
-        <div class="cat-overlay">
-          <div style="font-size:22px; font-weight:800;">Trending Accessories</div>
-          <div style="font-size:14px; color:var(--primary); font-weight:700; margin-top:4px;">Explore Store →</div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
+  <div class="landing-card">
+    <h1 class="title">JustKharido</h1>
+    <p>Everything you love, just a click away!</p>
+    <a href="home.html" class="btn">Shop Now &rarr;</a>
+  </div>
 </body>
 </html>
