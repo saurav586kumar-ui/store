@@ -1,114 +1,80 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>justkharido. — Supreme Gen-Z Store</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>justkharido. | Gen-Z Streetwear</title>
     <style>
+        :root {
+            --black: #0a0a0f;
+            --white: #ffffff;
+            --cyan: #00f0ff;
+            --pink: #ff007f;
+            --yellow: #ffe600;
+            --lime: #39ff14;
+        }
+
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: 'Impact', 'Trebuchet MS', 'Arial Black', sans-serif;
-            -webkit-tap-highlight-color: transparent;
         }
 
-        :root {
-            --pink: #FF0055;
-            --purple: #7928CA;
-            --yellow: #FFEE00;
-            --cyan: #00F0FF;
-            --lime: #33FF33;
-            --white: #FFFFFF;
-            --black: #000000;
-        }
-
-        html, body {
-            width: 100%;
-            height: 100vh;
-            overflow-x: hidden;
-            background-color: #0F0E17;
+        body {
+            background-color: var(--black);
             color: var(--white);
-            scroll-behavior: smooth;
+            font-family: 'Impact', sans-serif;
+            overflow-x: hidden;
         }
 
-        /* GEN-Z DYNAMIC ANIMATED BACKGROUND */
         .genz-bg {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            inset: 0;
             z-index: -1;
-            overflow: hidden;
-            background: linear-gradient(125deg, #0f0e17, #1a0b2e, #240046, #0f0e17);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            background: radial-gradient(circle at 20% 30%, #1a0033 0%, transparent 40%),
+                        radial-gradient(circle at 80% 70%, #001a33 0%, transparent 40%);
         }
 
         .blob {
             position: absolute;
-            border-radius: 50%;
             filter: blur(80px);
-            opacity: 0.45;
-            pointer-events: none;
-            animation: floatBlob 10s infinite alternate ease-in-out;
+            opacity: 0.4;
+            border-radius: 50%;
+            z-index: -1;
         }
 
-        .blob-1 { width: 350px; height: 350px; background: var(--pink); top: -50px; left: -50px; }
-        .blob-2 { width: 400px; height: 400px; background: var(--cyan); bottom: 10%; right: -100px; animation-delay: -3s; }
-        .blob-3 { width: 300px; height: 300px; background: var(--purple); top: 40%; left: 30%; animation-delay: -6s; }
-
-        @keyframes floatBlob {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(50px, 80px) scale(1.2); }
-        }
-
-        .genz-bg::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-image: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-            background-size: 40px 40px;
-            pointer-events: none;
-        }
+        .blob-1 { width: 300px; height: 300px; background: var(--pink); top: 10%; left: 5%; }
+        .blob-2 { width: 350px; height: 350px; background: var(--cyan); bottom: 10%; right: 5%; }
+        .blob-3 { width: 250px; height: 250px; background: var(--yellow); top: 50%; left: 40%; }
 
         .app-wrapper {
-            width: 100%;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
         }
 
         /* MARQUEE */
         .marquee {
             background: var(--yellow);
             color: var(--black);
-            border-bottom: 3px solid var(--black);
-            padding: 10px 0;
-            font-size: 0.95rem;
-            letter-spacing: 3px;
-            white-space: nowrap;
+            font-weight: 900;
+            padding: 8px 0;
             overflow: hidden;
-            width: 100%;
-            transform: rotate(-0.5deg);
-            box-shadow: 0 4px 0px rgba(0,0,0,0.5);
+            white-space: nowrap;
+            border: 2px solid var(--white);
+            border-radius: 6px;
+            margin-bottom: 20px;
+            box-shadow: 4px 4px 0px var(--pink);
         }
 
         .marquee-inner {
             display: inline-block;
-            animation: smoothScroll 10s linear infinite;
+            animation: marquee 15s linear infinite;
         }
 
-        @keyframes smoothScroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
         }
 
         /* NAVBAR */
@@ -116,216 +82,173 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 25px;
-            background: rgba(15, 14, 23, 0.85);
+            background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
-            border-bottom: 3px solid var(--white);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            border: 3px solid var(--white);
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: 6px 6px 0px var(--cyan);
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .brand {
-            font-size: 2.3rem;
+            font-size: 2rem;
+            letter-spacing: -1px;
             color: var(--white);
-            font-style: italic;
-            letter-spacing: -2px;
-            font-weight: 900;
-            cursor: pointer;
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            animation: brandJiggle 3s infinite ease-in-out;
         }
 
-        @keyframes brandJiggle {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(-3deg) scale(1.05); }
-            75% { transform: rotate(3deg) scale(1.05); }
+        .brand span {
+            color: var(--pink);
         }
-
-        .brand span { color: var(--pink); }
 
         .nav-actions {
             display: flex;
+            gap: 12px;
             align-items: center;
-            gap: 10px;
+            flex-wrap: wrap;
         }
 
-        .nav-btn {
+        .nav-btn, .user-profile-pill {
             background: var(--white);
             color: var(--black);
             border: 2px solid var(--black);
-            box-shadow: 3px 3px 0px var(--white);
-            padding: 8px 12px;
-            font-size: 0.8rem;
+            padding: 8px 14px;
             font-weight: 900;
             cursor: pointer;
-            white-space: nowrap;
             border-radius: 6px;
+            box-shadow: 3px 3px 0px var(--pink);
             transition: all 0.15s ease;
+            font-size: 0.95rem;
         }
 
-        .nav-btn:hover {
-            transform: translate(-2px, -2px) rotate(2deg);
+        .nav-btn:hover, .user-profile-pill:hover {
+            transform: translate(-2px, -2px);
             box-shadow: 5px 5px 0px var(--cyan);
+            background: var(--yellow);
         }
 
-        .gift-pill { background: #FFB3D9; animation: pulseGlow 1s infinite alternate; }
-        .bag-pill { background: var(--pink); color: var(--white); box-shadow: 3px 3px 0px var(--white); }
-
-        @keyframes pulseGlow {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.08) rotate(-1deg); background: var(--yellow); color: var(--black); }
-        }
-
-        .user-profile-pill {
-            background: var(--cyan);
-            color: var(--black);
-            border: 2px solid var(--black);
-            box-shadow: 3px 3px 0px var(--white);
-            padding: 6px 12px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 900;
-            transition: all 0.2s ease;
-        }
-        .user-profile-pill:hover { transform: rotate(5deg) scale(1.1); background: var(--lime); }
+        .gift-pill { background: var(--lime); }
 
         /* HERO SECTION */
         .hero-container {
-            width: 100%;
-            padding: 40px 25px;
             display: grid;
-            grid-template-columns: 1.2fr 1fr;
-            gap: 20px;
-            align-items: center;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
         }
 
-        @media(max-width: 768px) {
-            .hero-container { grid-template-columns: 1fr; text-align: center; }
-            .hero-left { align-items: center !important; }
+        @media (max-width: 768px) {
+            .hero-container { grid-template-columns: 1fr; }
         }
 
-        .hero-left { display: flex; flex-direction: column; align-items: flex-start; }
+        .hero-left {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
 
         .badge-limited {
-            background: var(--lime);
-            color: var(--black);
-            border: 2px solid var(--black);
-            border-radius: 50px;
-            padding: 6px 16px;
+            background: var(--pink);
+            color: var(--white);
+            display: inline-block;
+            padding: 5px 12px;
             font-size: 0.85rem;
-            font-weight: 900;
+            border-radius: 4px;
+            border: 2px solid var(--white);
+            width: fit-content;
             margin-bottom: 15px;
-            box-shadow: 4px 4px 0px var(--white);
-            animation: bounceBadge 1.5s infinite ease-in-out;
-        }
-
-        @keyframes bounceBadge {
-            0%, 100% { transform: translateY(0) rotate(-2deg); }
-            50% { transform: translateY(-8px) rotate(2deg); }
+            box-shadow: 3px 3px 0px var(--yellow);
         }
 
         .hero-title {
-            font-size: clamp(2.8rem, 6vw, 4.8rem);
+            font-size: 3.5rem;
             line-height: 0.95;
-            color: var(--white);
+            letter-spacing: -1px;
             margin-bottom: 15px;
-            text-transform: uppercase;
-            text-shadow: 3px 3px 0px var(--pink);
         }
 
-        .highlight-yellow {
-            background: var(--yellow);
-            color: var(--black);
-            border: 3px solid var(--black);
-            padding: 0 12px;
-            display: inline-block;
-            box-shadow: 5px 5px 0px var(--white);
-            transform: rotate(-2deg);
-            animation: tiltPulse 3s infinite alternate ease-in-out;
-        }
-
-        @keyframes tiltPulse {
-            0% { transform: rotate(-2deg) scale(1); }
-            100% { transform: rotate(2deg) scale(1.03); }
-        }
+        .highlight-yellow { color: var(--yellow); }
 
         .hero-sub {
             font-family: Arial, sans-serif;
-            font-weight: 700;
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             color: #ccc;
+            font-weight: bold;
+        }
+
+        .hero-right {
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .featured-card {
-            background: rgba(0, 240, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 4px solid var(--cyan);
-            border-radius: 20px;
-            box-shadow: 10px 10px 0px var(--pink);
-            padding: 30px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            background: rgba(255, 255, 255, 0.08);
+            border: 3px solid var(--white);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 8px 8px 0px var(--cyan);
             position: relative;
-            transform: rotate(1deg);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 100%;
+            max-width: 320px;
+            transform: rotate(2deg);
+            transition: transform 0.3s ease;
         }
+
         .featured-card:hover {
-            transform: translateY(-10px) rotate(-2deg) scale(1.02);
-            box-shadow: 15px 15px 0px var(--yellow);
+            transform: rotate(0deg) scale(1.03);
+            box-shadow: 10px 10px 0px var(--yellow);
         }
 
         .badge-hottest {
             position: absolute;
-            top: -15px; right: 15px;
-            background: var(--yellow); color: var(--black);
-            border: 2px solid var(--black); border-radius: 50px;
-            padding: 6px 14px; font-size: 0.9rem; font-weight: 900;
-            transform: rotate(12deg); box-shadow: 3px 3px 0px var(--black);
-            animation: franticShake 0.6s infinite alternate;
+            top: -12px;
+            right: -12px;
+            background: var(--yellow);
+            color: var(--black);
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            border-radius: 6px;
+            border: 2px solid var(--black);
+            box-shadow: 3px 3px 0px var(--pink);
         }
 
-        @keyframes franticShake {
-            0% { transform: rotate(10deg) scale(1); }
-            100% { transform: rotate(18deg) scale(1.15); }
-        }
-
-        .card-emoji { font-size: 5rem; margin-bottom: 10px; animation: floatEmoji 2.5s infinite ease-in-out alternate; }
-
-        @keyframes floatEmoji {
-            0% { transform: translateY(0) rotate(-5deg); }
-            100% { transform: translateY(-10px) rotate(10deg); }
+        .card-emoji {
+            font-size: 5rem;
+            margin: 15px 0;
         }
 
         .quick-add-btn {
-            width: 100%; background: var(--yellow); color: var(--black);
-            border: 2px solid var(--black); padding: 12px; font-size: 1.1rem;
-            font-weight: 900; cursor: pointer; margin-top: 15px; border-radius: 8px;
-            box-shadow: 4px 4px 0px var(--white); transition: all 0.15s ease;
+            width: 100%;
+            padding: 12px;
+            background: var(--cyan);
+            color: var(--black);
+            border: 2px solid var(--black);
+            font-weight: 900;
+            cursor: pointer;
+            margin-top: 15px;
+            border-radius: 6px;
+            box-shadow: 3px 3px 0px var(--white);
+            transition: all 0.15s ease;
         }
+
         .quick-add-btn:hover {
-            background: var(--pink); color: var(--white);
-            box-shadow: 4px 4px 0px var(--cyan); transform: translate(-3px, -3px) rotate(-1deg);
+            background: var(--lime);
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0px var(--white);
         }
 
         /* CATALOG */
-        .catalog-section { width: 100%; padding: 30px 25px 70px 25px; }
-        .catalog-title { 
-            font-size: 2.5rem; margin-bottom: 30px; text-transform: uppercase; 
-            letter-spacing: -1px; display: inline-block; background: var(--pink); 
-            color: var(--white); border: 3px solid var(--white); padding: 5px 15px;
-            box-shadow: 5px 5px 0px var(--cyan); transform: rotate(1deg);
-        }
+        .catalog-section { margin-bottom: 40px; }
+        .catalog-title { font-size: 2.2rem; margin-bottom: 20px; letter-spacing: -1px; }
 
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
         }
 
         .product-card {
@@ -425,7 +348,7 @@
         }
         .checkout-btn:hover { transform: translate(-2px, -2px) rotate(1deg); box-shadow: 7px 7px 0px var(--pink); background: var(--cyan); }
 
-        /* ADVANCED PROFILE HUB STYLES (FIXED & SCROLLABLE TABS) */
+        /* PROFILE HUB STYLES */
         .profile-tabs {
             display: flex; 
             gap: 8px; 
@@ -437,13 +360,8 @@
             scrollbar-width: thin;
             scrollbar-color: var(--yellow) transparent;
         }
-        .profile-tabs::-webkit-scrollbar {
-            height: 5px;
-        }
-        .profile-tabs::-webkit-scrollbar-thumb {
-            background: var(--yellow);
-            border-radius: 10px;
-        }
+        .profile-tabs::-webkit-scrollbar { height: 5px; }
+        .profile-tabs::-webkit-scrollbar-thumb { background: var(--yellow); border-radius: 10px; }
 
         .tab-btn {
             background: rgba(255,255,255,0.12); 
@@ -458,10 +376,7 @@
             transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: 2px 2px 0px var(--cyan);
         }
-        .tab-btn:hover {
-            transform: translateY(-2px);
-            background: rgba(255,255,255,0.25);
-        }
+        .tab-btn:hover { transform: translateY(-2px); background: rgba(255,255,255,0.25); }
         .tab-btn.active-tab { 
             background: var(--yellow); 
             color: var(--black); 
@@ -626,7 +541,7 @@
                 <button class="close-btn" id="closeAccDrawerBtn">✕</button>
             </div>
 
-            <!-- TABS - FULLY SCROLLABLE & VISIBLE -->
+            <!-- TABS -->
             <div class="profile-tabs">
                 <button class="tab-btn active-tab" onclick="switchTab(event, 'tabPersonal')">👤 Details</button>
                 <button class="tab-btn" onclick="switchTab(event, 'tabAddresses')">📍 Addresses</button>
@@ -728,8 +643,25 @@
 
     </div>
 
-    <!-- APP LOGIC SCRIPT -->
-    <script>
+    <!-- FIREBASE & APP LOGIC SCRIPT -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCjr6addRfZbk7Ce4Lzku9HnBqzqHN5LtY",
+            authDomain: "store-1a8c3.firebaseapp.com",
+            databaseURL: "https://store-1a8c3-default-rtdb.firebaseio.com",
+            projectId: "store-1a8c3",
+            storageBucket: "store-1a8c3.firebasestorage.app",
+            messagingSenderId: "1046602403433",
+            appId: "1:1046602403433:web:ee005a4ddaa07ada5d1cf8",
+            measurementId: "G-XNJYEPKDY0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
         let cart = [];
         let userData = JSON.parse(localStorage.getItem('jk_genz_user')) || {
             name: '',
@@ -770,7 +702,7 @@
                         <div class="item-title">${p.name}</div>
                         <div class="item-price">₹${p.price}</div>
                     </div>
-                    <button class="add-cart-btn" onclick="addToCart(${p.id})">+ ADD TO BAG</button>
+                    <button class="add-cart-btn" onclick="window.addToCart(${p.id})">+ ADD TO BAG</button>
                 </div>
             `).join('');
 
@@ -795,7 +727,7 @@
         };
 
         const quickAddFeatured = document.getElementById('quickAddFeatured');
-        if(quickAddFeatured) quickAddFeatured.onclick = () => addToCart(100);
+        if(quickAddFeatured) quickAddFeatured.onclick = () => window.addToCart(100);
 
         function updateCart() {
             const totalQty = cart.reduce((acc, i) => acc + i.qty, 0);
@@ -818,7 +750,7 @@
                             <strong style="color:var(--white);">${item.name}</strong>
                             <div style="font-size:0.9rem; color:#ccc;">₹${item.price} x ${item.qty}</div>
                         </div>
-                        <button onclick="removeFromCart(${item.id})" style="background:var(--pink); color:white; border:2px solid #fff; padding:6px 10px; cursor:pointer; font-weight:bold; border-radius:4px;">✕</button>
+                        <button onclick="window.removeFromCart(${item.id})" style="background:var(--pink); color:white; border:2px solid #fff; padding:6px 10px; cursor:pointer; font-weight:bold; border-radius:4px;">✕</button>
                     </div>
                 `).join('');
             }
@@ -924,7 +856,7 @@
                 <div class="address-card">
                     <div><strong style="color:var(--yellow);">Address #${index + 1}</strong></div>
                     <div style="color:#ddd; margin-top:6px; line-height:1.4;">${a.text}</div>
-                    <button onclick="deleteAddress(${a.id})" style="background:var(--pink); color:white; border:1px solid #fff; padding:4px 10px; font-size:0.8rem; font-weight:bold; cursor:pointer; margin-top:8px; border-radius:4px;">DELETE ✕</button>
+                    <button onclick="window.deleteAddress(${a.id})" style="background:var(--pink); color:white; border:1px solid #fff; padding:4px 10px; font-size:0.8rem; font-weight:bold; cursor:pointer; margin-top:8px; border-radius:4px;">DELETE ✕</button>
                 </div>
             `).join('');
         }
@@ -940,7 +872,7 @@
             const container = document.getElementById('checkoutAddressSelector');
             const list = userData.addresses || [];
             if(list.length === 0) {
-                container.innerHTML = `<p style="font-family:Arial; font-size:0.85rem; color:var(--pink);">No address found! <a href="#" onclick="openProfileToAddress()" style="color:var(--cyan); text-decoration:underline;">Add Address First 📍</a></p>`;
+                container.innerHTML = `<p style="font-family:Arial; font-size:0.85rem; color:var(--pink);">No address found! <a href="#" onclick="window.openProfileToAddress()" style="color:var(--cyan); text-decoration:underline;">Add Address First 📍</a></p>`;
                 return;
             }
             container.innerHTML = list.map((a, index) => `
@@ -966,7 +898,7 @@
             if (orders.length > 0) {
                 listContainer.innerHTML = orders.map(o => `
                     <div class="order-card">
-                        <strong style="color:var(--yellow);">Order #${o.id}</strong> - ₹${o.total}
+                        <strong style="color:var(--yellow);">Order #${o.orderId}</strong> - ₹${o.total}
                         <div style="color:#ccc; margin-top:4px;">Items: ${o.itemsCount} pcs | Date: ${o.date}</div>
                         <div style="color:#ddd; font-size:0.85rem; margin-top:4px;">📍 ${o.address}</div>
                         <div style="color:var(--lime); font-size:0.85rem; margin-top:4px; font-weight:bold;">Status: Processing & Packed 🚚</div>
@@ -1008,8 +940,8 @@
             document.getElementById('giftOverlay').classList.remove('active');
         };
 
-        // Checkout Action with Redirect Check
-        document.getElementById('checkoutBtn').onclick = function() {
+        // Checkout Action with Firebase Firestore Integration
+        document.getElementById('checkoutBtn').onclick = async function() {
             if(cart.length === 0) {
                 showToast("Pehle Bag mein kuch add to karo! 😅");
                 return;
@@ -1018,7 +950,7 @@
             if(!userData.addresses || userData.addresses.length === 0) {
                 showToast("Pehle delivery address add karo! 📍");
                 closeDrawers();
-                openProfileToAddress();
+                window.openProfileToAddress();
                 return;
             }
 
@@ -1028,21 +960,35 @@
             const totalPrice = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
             const totalQty = cart.reduce((acc, i) => acc + i.qty, 0);
 
-            userData.orders = userData.orders || [];
-            userData.orders.unshift({
-                id: Math.floor(1000 + Math.random() * 9000),
+            const orderData = {
+                orderId: Math.floor(1000 + Math.random() * 9000),
+                customerName: userData.name || "Guest",
+                customerPhone: userData.phone || "Not Provided",
+                items: cart,
                 total: totalPrice,
                 itemsCount: totalQty,
                 address: deliveryAddress,
-                date: new Date().toLocaleDateString()
-            });
+                status: "Processing",
+                date: new Date().toLocaleDateString(),
+                createdAt: new Date().toISOString()
+            };
 
-            localStorage.setItem('jk_genz_user', JSON.stringify(userData));
+            try {
+                // Firebase Firestore collection 'orders' mein order save ho raha hai
+                await addDoc(collection(db, "orders"), orderData);
 
-            showToast("Order Placed Successfully! 🚀");
-            cart = [];
-            updateCart();
-            closeDrawers();
+                userData.orders = userData.orders || [];
+                userData.orders.unshift(orderData);
+                localStorage.setItem('jk_genz_user', JSON.stringify(userData));
+
+                showToast("Order Placed & Saved to Firebase! 🚀");
+                cart = [];
+                updateCart();
+                closeDrawers();
+            } catch (e) {
+                console.error("Error saving order: ", e);
+                showToast("Order save fail ho gaya. Dubara try karein!");
+            }
         };
 
         renderProducts();
